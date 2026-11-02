@@ -1,0 +1,8 @@
+# Video source folders (MP4) - using WebM in production
+videos/
+videos_v2/
+
+# IDE & OS files
+.vscode/
+Thumbs.db
+.DS_Store
