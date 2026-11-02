@@ -14,8 +14,8 @@ const CONFIG_V2 = {
   timeline: [
     {
       id: "horizon",
-      label: "Cove & Horizon",
-      shortLabel: "Horizon",
+      label: "Aerial view",
+      shortLabel: "Aerial",
       badge: "AERIAL 01",
       coords: "41°08'N · 09°32'E",
       elevation: "48m ASL",
@@ -23,7 +23,7 @@ const CONFIG_V2 = {
     },
     {
       id: "exterior",
-      label: "Yacht Exterior",
+      label: "Exterior",
       shortLabel: "Exterior",
       badge: "EXTERIOR 02",
       coords: "Port Quarter · 18m",
@@ -32,8 +32,8 @@ const CONFIG_V2 = {
     },
     {
       id: "deck",
-      label: "Aft Deck Lounge",
-      shortLabel: "Aft Deck",
+      label: "Aft deck",
+      shortLabel: "Aft deck",
       badge: "COCKPIT 03",
       coords: "Stern Terrace",
       elevation: "3.2m ASL",
@@ -41,7 +41,7 @@ const CONFIG_V2 = {
     },
     {
       id: "flybridge",
-      label: "Hardtop & Radar",
+      label: "Flybridge",
       shortLabel: "Flybridge",
       badge: "UPPER DECK 04",
       coords: "Carbon Hardtop",
@@ -50,8 +50,8 @@ const CONFIG_V2 = {
     },
     {
       id: "salon",
-      label: "Main Salon Interior",
-      shortLabel: "Main Salon",
+      label: "Salon",
+      shortLabel: "Salon",
       badge: "INTERIOR 05",
       coords: "Panoramic Lounge",
       elevation: "2.1m ASL",
@@ -62,21 +62,21 @@ const CONFIG_V2 = {
   /* ── 2. SCENE DEFINITIONS & INTERACTIVE HOTSPOTS (POIs) ── */
   scenes: {
     horizon: {
-      title: "Mediterranean Cove & Horizon",
-      subtitle: "High-altitude drone vantage overlooking the turquoise anchorage",
+      title: "Aerial view",
+      subtitle: "The yacht at anchor in the cove",
       video: "videos_web/magnific_loopable-video-camera-estatica_wan_1080p_16-9_30fps_97740.mp4",
       loop: true,
       videoId: "97740",
       orbitVideo: "videos_web/magnific_loopable-video-turn-around-the-yatch-vendo-o-horiz_wan_1080p_16-9_30fps_97739.mp4",
       orbitId: "97739",
-      orbitLabel: "Horizon Drone Orbit",
+      orbitLabel: "Orbit the cove",
       pois: [
         {
           x: 13,
           y: 78,
           type: "nav",
           target: "exterior",
-          label: "Fly to Yacht Exterior"
+          label: "Exterior"
         },
         {
           x: 24,
@@ -84,27 +84,27 @@ const CONFIG_V2 = {
           type: "clip",
           clipId: "cam-horizon-to-salon",
           targetScene: "salon",
-          label: "Dive into Main Salon (97734)"
+          label: "Fly into the salon"
         },
         {
           x: 52,
           y: 44,
           type: "clip",
           clipId: "orbit-horizon",
-          label: "360° Cove & Horizon Orbit (97739)"
+          label: "Orbit the cove"
         }
       ]
     },
 
     exterior: {
-      title: "Yacht Exterior Profile",
-      subtitle: "68-foot aerodynamic hull in emerald cove waters",
+      title: "Exterior",
+      subtitle: "Three-quarter stern view",
       video: "videos_web/magnific_loopable-video-static-camera_wan_1080p_16-9_30fps_97757.mp4",
       loop: true,
       videoId: "97757",
       orbitVideo: "videos_web/magnific_360-em-volta-do-yach-mesma-atura-de-camera_seedance_1080p_16-9_24fps_97756.mp4",
       orbitId: "97756",
-      orbitLabel: "360° Yacht Orbit",
+      orbitLabel: "Orbit the yacht",
       pano: "aerial",
       pois: [
         {
@@ -112,28 +112,28 @@ const CONFIG_V2 = {
           y: 66,
           type: "nav",
           target: "deck",
-          label: "Aft Deck Lounge (97744)"
+          label: "Aft deck"
         },
         {
           x: 47,
           y: 47,
           type: "nav",
           target: "flybridge",
-          label: "Hardtop & Radar (97743)"
+          label: "Flybridge"
         },
         {
           x: 42,
           y: 56,
           type: "nav",
           target: "salon",
-          label: "Enter Main Salon (97737)"
+          label: "Salon"
         },
         {
           x: 72,
           y: 28,
           type: "nav",
           target: "horizon",
-          label: "Pull Back to Cove Horizon (97741)"
+          label: "Aerial view"
         },
         {
           x: 56,
@@ -141,62 +141,62 @@ const CONFIG_V2 = {
           type: "drawer",
           drawerTab: "materials",
           drawerSub: "hull",
-          label: "Configure Hull Color"
+          label: "Hull color"
         }
       ]
     },
 
     deck: {
-      title: "Aft Deck & Stern Lounge",
-      subtitle: "Open-air teak terrace with twin modular sun-loungers",
+      title: "Aft deck",
+      subtitle: "Teak deck and lounge sofas",
       video: "videos_web/magnific_loopable-video-turn-around-the-sofas_wan_1080p_16-9_30fps_97755.mp4",
       loop: true,
       videoId: "97755",
       orbitVideo: "videos_web/magnific_loopable-video-turn-around-the-sofas_wan_1080p_16-9_30fps_97755.mp4",
       orbitId: "97755",
-      orbitLabel: "Turn Around Deck Sofas",
+      orbitLabel: "Orbit the deck",
       pois: [
         {
           x: 50,
           y: 44,
           type: "nav",
           target: "salon",
-          label: "Enter Main Salon (97732)"
+          label: "Salon"
         },
         {
           x: 48,
           y: 24,
           type: "nav",
           target: "flybridge",
-          label: "Rise to Hardtop (97742)"
+          label: "Flybridge"
         },
         {
           x: 34,
           y: 62,
           type: "clip",
           clipId: "mat-deck-sofa",
-          label: "Change Sofa Upholstery (97751)"
+          label: "Sofa fabric"
         },
         {
           x: 52,
           y: 76,
           type: "clip",
           clipId: "mat-deck-floor",
-          label: "Change Deck Flooring (97752)"
+          label: "Deck flooring"
         },
         {
           x: 80,
           y: 25,
           type: "nav",
           target: "horizon",
-          label: "Drone Pullback to Horizon (97738)"
+          label: "Aerial view"
         }
       ]
     },
 
     flybridge: {
-      title: "Hardtop & Navigation Domes",
-      subtitle: "Carbon-fiber superstructure with dual satellite domes and glazing",
+      title: "Flybridge",
+      subtitle: "Hardtop and radar domes",
       video: "videos_web/magnific_transicao-suave-de-troca-de-camera-de-longe-pra-pe_wan_1080p_16-9_30fps_97743.mp4",
       loop: false,
       holdLastFrame: true,
@@ -208,7 +208,7 @@ const CONFIG_V2 = {
           type: "clip",
           clipId: "cam-flybridge-to-salon-a",
           targetScene: "salon",
-          label: "Dive Through Side Glass to Salon (97733)"
+          label: "Salon via side glass"
         },
         {
           x: 36,
@@ -216,21 +216,21 @@ const CONFIG_V2 = {
           type: "clip",
           clipId: "cam-flybridge-to-salon-b",
           targetScene: "salon",
-          label: "Sweep Stern into Salon (97736)"
+          label: "Salon via stern"
         },
         {
           x: 24,
           y: 34,
           type: "nav",
           target: "exterior",
-          label: "Return to Exterior View"
+          label: "Exterior"
         }
       ]
     },
 
     salon: {
-      title: "Panoramic Main Salon",
-      subtitle: "360-degree glazed living area with bespoke Italian upholstery",
+      title: "Salon",
+      subtitle: "Glazed main living area",
       video: "videos_web/magnific_loopable-video-transicao-suave-de-troca-de-camera-_wan_1080p_16-9_30fps_97732.mp4",
       loop: false,
       holdLastFrame: true,
@@ -242,35 +242,35 @@ const CONFIG_V2 = {
           y: 66,
           type: "clip",
           clipId: "mat-salon-harmony",
-          label: "Full Salon Suite: Navy Velvet (97729)"
+          label: "Navy velvet suite"
         },
         {
           x: 72,
           y: 74,
           type: "clip",
           clipId: "mat-salon-sofas",
-          label: "Dual Sofa Fabric: Slate & Navy (97730)"
+          label: "Sofa fabric"
         },
         {
           x: 49,
           y: 77,
           type: "clip",
           clipId: "mat-salon-table",
-          label: "Coffee Table: Carrara Marble (97731)"
+          label: "Coffee table"
         },
         {
           x: 18,
           y: 42,
           type: "nav",
           target: "deck",
-          label: "Step Out to Aft Deck"
+          label: "Aft deck"
         },
         {
           x: 82,
           y: 36,
           type: "nav",
           target: "exterior",
-          label: "Exterior Overview"
+          label: "Exterior"
         }
       ]
     }
@@ -397,72 +397,72 @@ const CONFIG_V2 = {
       {
         id: "mood-day-sunny",
         code: "97757",
-        name: "Mediterranean Noon",
-        sub: "Crystal turquoise water · Direct sun loop",
+        name: "Midday sun",
+        sub: "Clear sky, turquoise water",
         scene: "exterior",
         src: "videos_web/magnific_loopable-video-static-camera_wan_1080p_16-9_30fps_97757.mp4",
         loop: true,
-        badge: "STATIC LOOP",
+        badge: "Loop",
         swatch: "linear-gradient(135deg, #38bdf8 0%, #0284c7 50%, #facc15 100%)"
       },
       {
         id: "mood-soft-lighting",
         code: "97750",
-        name: "Soft Coastal Mist",
-        sub: "Smooth illumination shift · Diffused sky & warm teak",
+        name: "Soft light",
+        sub: "Hazy sky, diffused light",
         scene: "exterior",
         src: "videos_web/magnific_transio-suave-de-iluminao-_wan_1080p_16-9_30fps_97750.mp4",
         loop: false,
         holdLastFrame: true,
-        badge: "LIGHT TRANSITION",
+        badge: "Transition",
         swatch: "linear-gradient(135deg, #cbd5e1 0%, #94a3b8 55%, #d6b370 100%)"
       },
       {
         id: "mood-day-to-rain",
         code: "97748",
-        name: "Sun to Summer Rain",
-        sub: "Weather transition · Rippling rain & wet teak deck",
+        name: "Rain shower",
+        sub: "Sun turns to rain",
         scene: "exterior",
         src: "videos_web/magnific_loopable-video-transio-suave-de-dia-pra-chuva_wan_1080p_16-9_30fps_97748.mp4",
         followUpSrc: "videos_web/magnific_loopable-video-static-camera_wan_1080p_16-9_30fps_97749.mp4",
         followUpCode: "97749",
         loop: false,
-        badge: "WEATHER + LOOP",
+        badge: "Transition",
         swatch: "linear-gradient(135deg, #0ea5e9 0%, #475569 55%, #1e293b 100%)"
       },
       {
         id: "mood-rain-loop",
         code: "97749",
-        name: "Rainstorm Anchorage",
-        sub: "Static camera loop · Misty cove & raindrop ripples",
+        name: "Rain",
+        sub: "Steady rain in the cove",
         scene: "exterior",
         src: "videos_web/magnific_loopable-video-static-camera_wan_1080p_16-9_30fps_97749.mp4",
         loop: true,
-        badge: "STATIC LOOP",
+        badge: "Loop",
         swatch: "linear-gradient(135deg, #64748b 0%, #334155 60%, #0f172a 100%)"
       },
       {
         id: "mood-day-to-night",
         code: "97753",
-        name: "Dusk Illumination Cycle",
-        sub: "Day to night transition · Warm cabin & cyan underwater LEDs",
+        name: "Sunset to night",
+        sub: "Day fades, the yacht lights come on",
         scene: "exterior",
         src: "videos_web/magnific_loopable-video-_wan_1080p_16-9_30fps_97753.mp4",
         followUpSrc: "videos_web/magnific_loopable-video-_wan_1080p_16-9_30fps_97754.mp4",
         followUpCode: "97754",
         loop: false,
-        badge: "LIGHTING CYCLE",
+        badge: "Transition",
         swatch: "linear-gradient(135deg, #f59e0b 0%, #1e3a8a 55%, #06b6d4 100%)"
       },
       {
         id: "mood-night-loop",
         code: "97754",
-        name: "Starlight & Underwater Glow",
-        sub: "Night static loop · Full architectural & marine LEDs",
+        name: "Night",
+        sub: "Cabin and underwater lights",
         scene: "exterior",
         src: "videos_web/magnific_loopable-video-_wan_1080p_16-9_30fps_97754.mp4",
         loop: true,
-        badge: "NIGHT LOOP",
+        badge: "Loop",
         swatch: "linear-gradient(135deg, #090d16 0%, #0e7490 55%, #f59e0b 100%)"
       }
     ],
@@ -473,9 +473,9 @@ const CONFIG_V2 = {
         {
           id: "mat-hull-default",
           code: "97757",
-          name: "Titanium Silver Metallic",
-          category: "Hull Finish",
-          desc: "Signature satin-metallic titanium hull with dark carbon superstructure",
+          name: "Titanium silver",
+          category: "Hull",
+          desc: "Standard satin-metallic finish",
           scene: "exterior",
           src: "videos_web/magnific_loopable-video-static-camera_wan_1080p_16-9_30fps_97757.mp4",
           loop: true,
@@ -484,9 +484,9 @@ const CONFIG_V2 = {
         {
           id: "mat-hull-pearl",
           code: "97745",
-          name: "Glacier Pearl & Obsidian",
-          category: "Hull Finish",
-          desc: "Smooth color morph: Deep Navy → Glacier Pearl White → Titanium Grey",
+          name: "Pearl white",
+          category: "Hull",
+          desc: "Navy to pearl white to titanium",
           scene: "exterior",
           src: "videos_web/magnific_loopable-video-transicao-suave-de-troca-de-cor-do-_wan_1080p_16-9_30fps_97745.mp4",
           loop: true,
@@ -495,9 +495,9 @@ const CONFIG_V2 = {
         {
           id: "mat-hull-cobalt",
           code: "97746",
-          name: "Aegean Cobalt Blue",
-          category: "Hull Finish",
-          desc: "Smooth color morph: Titanium Grey → Vibrant Cobalt Blue → Titanium",
+          name: "Cobalt blue",
+          category: "Hull",
+          desc: "Titanium to cobalt blue and back",
           scene: "exterior",
           src: "videos_web/magnific_loopable-video-transicao-suave-de-troca-de-cor-do-_wan_1080p_16-9_30fps_97746.mp4",
           loop: true,
@@ -506,9 +506,9 @@ const CONFIG_V2 = {
         {
           id: "mat-hull-midnight",
           code: "97747",
-          name: "Midnight Regatta Navy",
-          category: "Hull Finish",
-          desc: "Smooth hull transition from Titanium Grey to Deep Midnight Navy Blue",
+          name: "Midnight navy",
+          category: "Hull",
+          desc: "Titanium to deep navy",
           scene: "exterior",
           src: "videos_web/magnific_loopable-video-transicao-suave-de-troca-de-cor-do-_wan_1080p_16-9_30fps_97747.mp4",
           loop: false,
@@ -520,9 +520,9 @@ const CONFIG_V2 = {
         {
           id: "mat-deck-sofa",
           code: "97751",
-          name: "Cockpit Loungers: Cream → Anthracite",
-          category: "Aft Deck Upholstery",
-          desc: "Weatherproof Loro Piana marine bouclé from Warm Ivory to Charcoal Grey",
+          name: "Anthracite sofas",
+          category: "Deck sofas",
+          desc: "Cream bouclé to charcoal grey",
           scene: "deck",
           src: "videos_web/magnific_transio-suave-da-troca-do-material-do-sofa_wan_1080p_16-9_30fps_97751.mp4",
           loop: false,
@@ -532,9 +532,9 @@ const CONFIG_V2 = {
         {
           id: "mat-deck-floor",
           code: "97752",
-          name: "Deck Planking: Blonde Teak → Slate",
-          category: "Aft Deck Flooring",
-          desc: "Natural Burmese teak caulked planks morphing to dark brushed thermo-ash",
+          name: "Dark slate deck",
+          category: "Deck flooring",
+          desc: "Natural teak to dark thermo-ash",
           scene: "deck",
           src: "videos_web/magnific_transio-suave-da-troca-do-piso_wan_1080p_16-9_30fps_97752.mp4",
           loop: false,
@@ -546,9 +546,9 @@ const CONFIG_V2 = {
         {
           id: "mat-salon-harmony",
           code: "97729",
-          name: "Salon Suite: Sand → Midnight Velvet",
-          category: "Interior Full Suite",
-          desc: "Complete interior transformation: Sand linen sofas to Navy velvet & terracotta pillows",
+          name: "Navy velvet suite",
+          category: "Salon",
+          desc: "Sand linen to navy velvet with terracotta",
           scene: "salon",
           src: "videos_web/magnific_loopable-video-transicao-suave-de-troca-de-materia_wan_1080p_16-9_30fps_97729.mp4",
           loop: false,
@@ -558,9 +558,9 @@ const CONFIG_V2 = {
         {
           id: "mat-salon-sofas",
           code: "97730",
-          name: "Bespoke Sofas: Ivory → Slate & Navy",
-          category: "Interior Upholstery",
-          desc: "Asymmetric port & starboard sofa upholstery transition with warm oak flooring",
+          name: "Slate & navy sofas",
+          category: "Salon",
+          desc: "Ivory sofas to slate and navy",
           scene: "salon",
           src: "videos_web/magnific_loopable-video-transicao-suave-de-troca-de-materia_wan_1080p_16-9_30fps_97730.mp4",
           loop: false,
@@ -570,9 +570,9 @@ const CONFIG_V2 = {
         {
           id: "mat-salon-table",
           code: "97731",
-          name: "Centerpiece: Smoked Oak ↔ Carrara Marble",
-          category: "Interior Stone & Millwork",
-          desc: "Salon coffee table morphing between smoked walnut-oak and white Carrara marble",
+          name: "Marble coffee table",
+          category: "Salon",
+          desc: "Smoked oak and Carrara marble",
           scene: "salon",
           src: "videos_web/magnific_loopable-video-transicao-suave-de-troca-de-materia_wan_1080p_16-9_30fps_97731.mp4",
           loop: true,
@@ -586,38 +586,38 @@ const CONFIG_V2 = {
       {
         id: "orbit-yacht-360",
         code: "97756",
-        name: "360° Full Yacht Orbit",
-        sub: "Constant-altitude aerial turnaround around the entire vessel",
+        name: "Around the yacht",
+        sub: "Full 360° flight at deck height",
         scene: "exterior",
         src: "videos_web/magnific_360-em-volta-do-yach-mesma-atura-de-camera_seedance_1080p_16-9_24fps_97756.mp4",
         loop: true,
-        badge: "360° ORBIT"
+        badge: "360°"
       },
       {
         id: "orbit-horizon",
         code: "97739",
-        name: "Cove & Horizon Turnaround",
-        sub: "High-altitude sweeping orbit revealing the coastline and sea horizon",
+        name: "Around the cove",
+        sub: "High orbit with the coastline",
         scene: "horizon",
         src: "videos_web/magnific_loopable-video-turn-around-the-yatch-vendo-o-horiz_wan_1080p_16-9_30fps_97739.mp4",
         loop: true,
-        badge: "HORIZON ORBIT"
+        badge: "Orbit"
       },
       {
         id: "orbit-deck-sofas",
         code: "97755",
-        name: "Aft Deck Lounge Orbit",
-        sub: "180° arc around the stern cockpit sofas looking out to the horizon",
+        name: "Around the deck sofas",
+        sub: "Arc around the aft lounge",
         scene: "deck",
         src: "videos_web/magnific_loopable-video-turn-around-the-sofas_wan_1080p_16-9_30fps_97755.mp4",
         loop: true,
-        badge: "DECK ORBIT"
+        badge: "Orbit"
       },
       {
         id: "cam-horizon-static",
         code: "97740",
-        name: "Cove Aerial Static Loop",
-        sub: "Locked-off high altitude perspective with gentle sea ripples",
+        name: "Aerial still",
+        sub: "Fixed high view of the cove",
         scene: "horizon",
         src: "videos_web/magnific_loopable-video-camera-estatica_wan_1080p_16-9_30fps_97740.mp4",
         loop: true,
@@ -626,8 +626,8 @@ const CONFIG_V2 = {
       {
         id: "cam-exterior-static",
         code: "97757",
-        name: "Yacht Exterior Static Loop",
-        sub: "Locked-off three-quarter stern profile in crystal water",
+        name: "Exterior still",
+        sub: "Fixed three-quarter stern view",
         scene: "exterior",
         src: "videos_web/magnific_loopable-video-static-camera_wan_1080p_16-9_30fps_97757.mp4",
         loop: true,
@@ -642,8 +642,8 @@ const CONFIG_V2 = {
         code: "97744",
         from: "exterior",
         to: "deck",
-        name: "Exterior → Aft Deck Lounge",
-        sub: "Smooth approach from port-quarter overview to the stern loungers",
+        name: "Exterior → Aft deck",
+        sub: "Approach the stern sofas",
         src: "videos_web/magnific_transicao-suave-de-troca-de-camera-de-longe-pra-pe_wan_1080p_16-9_30fps_97744.mp4",
         holdLastFrame: true
       },
@@ -652,8 +652,8 @@ const CONFIG_V2 = {
         code: "97743",
         from: "exterior",
         to: "flybridge",
-        name: "Exterior → Hardtop & Radar",
-        sub: "Push-in from medium exterior overview to the carbon hardtop domes",
+        name: "Exterior → Flybridge",
+        sub: "Push in to the hardtop",
         src: "videos_web/magnific_transicao-suave-de-troca-de-camera-de-longe-pra-pe_wan_1080p_16-9_30fps_97743.mp4",
         holdLastFrame: true
       },
@@ -662,8 +662,8 @@ const CONFIG_V2 = {
         code: "97737",
         from: "exterior",
         to: "salon",
-        name: "Exterior → Main Salon Interior",
-        sub: "Continuous flight from exterior overview across the deck into the salon",
+        name: "Exterior → Salon",
+        sub: "Across the deck and inside",
         src: "videos_web/magnific_loopable-video-transicao-suave-de-troca-de-camera-_wan_1080p_16-9_30fps_97737.mp4",
         holdLastFrame: true
       },
@@ -672,8 +672,8 @@ const CONFIG_V2 = {
         code: "97741",
         from: "exterior",
         to: "horizon",
-        name: "Exterior → Cove Horizon Ascent",
-        sub: "Drone pullback from the yacht to the high Mediterranean cove vista",
+        name: "Exterior → Aerial view",
+        sub: "Pull back over the cove",
         src: "videos_web/magnific_transicao-suave-de-troca-de-camera-de-perto-do-yat_wan_1080p_16-9_30fps_97741.mp4",
         followUpSrc: "videos_web/magnific_loopable-video-camera-estatica_wan_1080p_16-9_30fps_97740.mp4",
         followUpCode: "97740"
@@ -683,8 +683,8 @@ const CONFIG_V2 = {
         code: "97732",
         from: "deck",
         to: "salon",
-        name: "Aft Deck → Main Salon (Starboard Glide)",
-        sub: "Sweeping glide over the aft loungers into the main cabin",
+        name: "Aft deck → Salon, glide",
+        sub: "Over the sofas into the cabin",
         src: "videos_web/magnific_loopable-video-transicao-suave-de-troca-de-camera-_wan_1080p_16-9_30fps_97732.mp4",
         holdLastFrame: true
       },
@@ -693,8 +693,8 @@ const CONFIG_V2 = {
         code: "97735",
         from: "deck",
         to: "salon",
-        name: "Aft Deck → Main Salon (Centerline Walk)",
-        sub: "Low-angle tracking shot between the twin sofas through the glass doors",
+        name: "Aft deck → Salon, walk",
+        sub: "Between the sofas, through the doors",
         src: "videos_web/magnific_loopable-video-transicao-suave-de-troca-de-camera-_wan_1080p_16-9_30fps_97735.mp4",
         holdLastFrame: true
       },
@@ -703,8 +703,8 @@ const CONFIG_V2 = {
         code: "97742",
         from: "deck",
         to: "flybridge",
-        name: "Aft Deck → Hardtop Roof Crane",
-        sub: "Vertical crane movement from the stern sofas up to the radar hardtop",
+        name: "Aft deck → Flybridge",
+        sub: "Rise up to the hardtop",
         src: "videos_web/magnific_transicao-suave-de-troca-de-camera-de-do-sofa-para_wan_1080p_16-9_30fps_97742.mp4",
         holdLastFrame: true
       },
@@ -713,8 +713,8 @@ const CONFIG_V2 = {
         code: "97738",
         from: "deck",
         to: "horizon",
-        name: "Aft Deck → Cove Horizon Ascent",
-        sub: "Long pullback from the cockpit lounge all the way to the high cove view",
+        name: "Aft deck → Aerial view",
+        sub: "Long pull back over the cove",
         src: "videos_web/magnific_loopable-video-transicao-suave-de-troca-de-camera-_wan_1080p_16-9_30fps_97738.mp4",
         followUpSrc: "videos_web/magnific_loopable-video-camera-estatica_wan_1080p_16-9_30fps_97740.mp4",
         followUpCode: "97740"
@@ -724,8 +724,8 @@ const CONFIG_V2 = {
         code: "97733",
         from: "flybridge",
         to: "salon",
-        name: "Hardtop → Main Salon (Port Glass Dive)",
-        sub: "Camera descends from the radar roof through the panoramic side glazing",
+        name: "Flybridge → Salon, side glass",
+        sub: "Down through the side windows",
         src: "videos_web/magnific_loopable-video-transicao-suave-de-troca-de-camera-_wan_1080p_16-9_30fps_97733.mp4",
         holdLastFrame: true
       },
@@ -734,8 +734,8 @@ const CONFIG_V2 = {
         code: "97736",
         from: "flybridge",
         to: "salon",
-        name: "Hardtop → Main Salon (Stern Overhang)",
-        sub: "Curving descent around the aft hardtop overhang into the salon",
+        name: "Flybridge → Salon, stern",
+        sub: "Around the overhang and inside",
         src: "videos_web/magnific_loopable-video-transicao-suave-de-troca-de-camera-_wan_1080p_16-9_30fps_97736.mp4",
         holdLastFrame: true
       },
@@ -744,8 +744,8 @@ const CONFIG_V2 = {
         code: "97734",
         from: "horizon",
         to: "salon",
-        name: "Cove Horizon → Main Salon (Epic Dive)",
-        sub: "Spectacular long-range drone dive from the bay sky straight inside the yacht",
+        name: "Aerial view → Salon",
+        sub: "From the sky straight inside",
         src: "videos_web/magnific_loopable-video-transicao-suave-de-troca-de-camera-_wan_1080p_16-9_30fps_97734.mp4",
         holdLastFrame: true
       }

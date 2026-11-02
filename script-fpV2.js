@@ -17,7 +17,7 @@ const MOBILE = window.matchMedia("(hover: none)").matches || window.innerWidth <
 let activeSlot = "A";
 let currentScene = CONFIG_V2.defaultScene || "exterior";
 let currentClipCode = "97757";
-let currentClipName = "Yacht Exterior Static Loop";
+let currentClipName = "Exterior still";
 let currentClipSrc = "";
 let forceLoopMode = false;
 let globalSpeedMultiplier = 2.0; // Default 2.0x so 10s AI clips feel snappy (~5s)
@@ -112,11 +112,11 @@ window.setGlobalVideoSpeed = function setGlobalVideoSpeed(speed) {
 
 /* Track active bespoke configuration for the Shipyard Specification Dossier */
 const yachtConfigState = {
-  hull: "Titanium Silver Metallic",
-  deckSofa: "Loro Piana Cream Ivory Bouclé",
-  deckFloor: "Burmese Blonde Teak Planking",
-  salonSuite: "Sand Linen & Smoked Walnut",
-  atmosphere: "Mediterranean Noon"
+  hull: "Titanium silver",
+  deckSofa: "Cream bouclé",
+  deckFloor: "Natural teak",
+  salonSuite: "Sand linen",
+  atmosphere: "Midday sun"
 };
 
 function getActiveVideo() {
@@ -415,8 +415,8 @@ window.triggerCatalogClip = function triggerCatalogClip(idOrCode) {
 
   // Record bespoke selection for the Shipyard Dossier
   if (item.id.startsWith("mat-hull-")) yachtConfigState.hull = item.name;
-  else if (item.id === "mat-deck-sofa") yachtConfigState.deckSofa = "Anthracite Marine Bouclé";
-  else if (item.id === "mat-deck-floor") yachtConfigState.deckFloor = "Dark Slate Thermo-Ash Decking";
+  else if (item.id === "mat-deck-sofa") yachtConfigState.deckSofa = "Anthracite bouclé";
+  else if (item.id === "mat-deck-floor") yachtConfigState.deckFloor = "Dark thermo-ash";
   else if (item.id.startsWith("mat-salon-")) yachtConfigState.salonSuite = item.name;
   else if (item.id.startsWith("mood-")) yachtConfigState.atmosphere = item.name;
 
@@ -489,70 +489,38 @@ function renderContextConfigBar(sceneId) {
   let label = "";
   let pillsHtml = "";
 
+  const swatch = item => `
+      <button class="ctx-swatch-btn" data-clip-code="${item.code}" onclick="triggerCatalogClip('${item.id}')" title="${item.desc}">
+        <span class="ctx-swatch-dot" style="background:${item.swatch}"></span>
+        <span class="ctx-swatch-lbl">${item.name}</span>
+      </button>`;
+  const action = (code, id, text) => `
+      <button class="ctx-action-btn" data-clip-code="${code}" onclick="triggerCatalogClip('${id}')">
+        <span>${text}</span>
+      </button>`;
+
   if (sceneId === "exterior") {
-    label = "HULL FINISH & ORBIT";
-    pillsHtml = cat.materials.hull.map(h => `
-      <button class="ctx-swatch-btn" data-clip-code="${h.code}" onclick="triggerCatalogClip('${h.id}')" title="${h.name}">
-        <span class="ctx-swatch-dot" style="background:${h.swatch}"></span>
-        <span class="ctx-swatch-lbl">${h.name.replace(" Metallic", "").replace(" & Obsidian", "")}</span>
-      </button>
-    `).join("") + `
-      <button class="ctx-action-btn" data-clip-code="97756" onclick="triggerCatalogClip('orbit-yacht-360')">
-        <span>↻ 360° Yacht Orbit</span>
-      </button>
-    `;
+    label = "Hull color";
+    pillsHtml = cat.materials.hull.map(swatch).join("");
   } else if (sceneId === "deck") {
-    label = "AFT DECK BESPOKE";
-    pillsHtml = cat.materials.deck.map(d => `
-      <button class="ctx-swatch-btn" data-clip-code="${d.code}" onclick="triggerCatalogClip('${d.id}')" title="${d.desc}">
-        <span class="ctx-swatch-dot" style="background:${d.swatch}"></span>
-        <span class="ctx-swatch-lbl">${d.name}</span>
-      </button>
-    `).join("") + `
-      <button class="ctx-action-btn" data-clip-code="97755" onclick="triggerCatalogClip('orbit-deck-sofas')">
-        <span>↻ Orbit Loungers</span>
-      </button>
-      <button class="ctx-action-btn" data-clip-code="97732" onclick="triggerCatalogClip('cam-deck-to-salon-a')">
-        <span>→ Salon Glide A</span>
-      </button>
-      <button class="ctx-action-btn" data-clip-code="97735" onclick="triggerCatalogClip('cam-deck-to-salon-b')">
-        <span>→ Salon Walk B</span>
-      </button>
-    `;
+    label = "Aft deck";
+    pillsHtml = cat.materials.deck.map(swatch).join("") +
+      action("97732", "cam-deck-to-salon-a", "Glide to salon") +
+      action("97735", "cam-deck-to-salon-b", "Walk to salon");
   } else if (sceneId === "salon") {
-    label = "MAIN SALON MILLWORK & UPHOLSTERY";
-    pillsHtml = cat.materials.salon.map(s => `
-      <button class="ctx-swatch-btn" data-clip-code="${s.code}" onclick="triggerCatalogClip('${s.id}')" title="${s.desc}">
-        <span class="ctx-swatch-dot" style="background:${s.swatch}"></span>
-        <span class="ctx-swatch-lbl">${s.name}</span>
-      </button>
-    `).join("");
+    label = "Salon finishes";
+    pillsHtml = cat.materials.salon.map(swatch).join("");
   } else if (sceneId === "flybridge") {
-    label = "UPPER DECK CAMERA FLIGHTS";
-    pillsHtml = `
-      <button class="ctx-action-btn" data-clip-code="97733" onclick="triggerCatalogClip('cam-flybridge-to-salon-a')">
-        <span>↘ Side Glass Dive to Salon</span>
-      </button>
-      <button class="ctx-action-btn" data-clip-code="97736" onclick="triggerCatalogClip('cam-flybridge-to-salon-b')">
-        <span>↘ Stern Overhang Sweep to Salon</span>
-      </button>
-      <button class="ctx-action-btn" data-clip-code="97743" onclick="triggerCatalogClip('cam-exterior-to-flybridge')">
-        <span>↺ Replay Approach</span>
-      </button>
-    `;
+    label = "Go to salon";
+    pillsHtml =
+      action("97733", "cam-flybridge-to-salon-a", "Via side glass") +
+      action("97736", "cam-flybridge-to-salon-b", "Via stern") +
+      action("97743", "cam-exterior-to-flybridge", "Replay");
   } else if (sceneId === "horizon") {
-    label = "AERIAL COVE PERSPECTIVES";
-    pillsHtml = `
-      <button class="ctx-action-btn" data-clip-code="97740" onclick="triggerCatalogClip('cam-horizon-static')">
-        <span>⚓ Cove Static Vista</span>
-      </button>
-      <button class="ctx-action-btn" data-clip-code="97739" onclick="triggerCatalogClip('orbit-horizon')">
-        <span>↻ 360° Cove & Horizon Orbit</span>
-      </button>
-      <button class="ctx-action-btn" data-clip-code="97734" onclick="triggerCatalogClip('cam-horizon-to-salon')">
-        <span>↘ Epic Drone Dive into Salon</span>
-      </button>
-    `;
+    label = "Views";
+    pillsHtml =
+      action("97740", "cam-horizon-static", "Still") +
+      action("97734", "cam-horizon-to-salon", "Fly into salon");
   }
 
   bar.innerHTML = `
@@ -571,21 +539,22 @@ function renderPOIs(pois = []) {
 
   pois.forEach((p, idx) => {
     const el = document.createElement("div");
-    el.className = "poi" + (p.type === "clip" ? " poi--clip" : "") + (p.type === "drawer" ? " poi--drawer" : "");
+    // Shortcut chip: "go to" places get an arrow, changes (finishes, flights) get a play mark
+    const isNav = p.type === "nav";
+    el.className = "poi poi-shortcut" + (isNav ? " poi--nav" : " poi--change");
     el.style.left = p.x + "%";
     el.style.top = p.y + "%";
     el.style.animationDelay = idx * 70 + "ms";
 
-    let iconSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
-    if (p.type === "clip") {
-      iconSvg = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
-    } else if (p.type === "drawer") {
-      iconSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18"/></svg>';
-    }
+    const iconSvg = isNav
+      ? '<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5l5-5M4.5 3.5h4v4"/></svg>'
+      : '<svg viewBox="0 0 12 12" fill="currentColor"><path d="M4 2.8v6.4L9.2 6z"/></svg>';
 
     el.innerHTML = `
-      <div class="poi-btn">${iconSvg}<span class="poi-pulse"></span></div>
-      <div class="poi-name">${p.label.replace(/\s*\(\d+\)$/, "")}</div>
+      <button class="poi-chip" type="button">
+        <span class="poi-chip-ic">${iconSvg}</span>
+        <span class="poi-chip-lbl">${p.label.replace(/\s*\(\d+\)$/, "")}</span>
+      </button>
     `;
 
     const activate = () => {
@@ -628,15 +597,7 @@ function buildTrack() {
     const btn = document.createElement("button");
     btn.className = "t-pt";
     btn.dataset.id = item.id;
-    btn.setAttribute("aria-label", item.label);
-    btn.setAttribute("data-label", `${item.badge} · ${item.label}`);
-    btn.innerHTML = `
-      ${item.icon}
-      <div class="t-text">
-        <span class="t-badge">${item.badge}</span>
-        <span class="t-label">${item.shortLabel || item.label}</span>
-      </div>
-    `;
+    btn.innerHTML = `<span class="t-label">${item.shortLabel || item.label}</span>`;
     btn.addEventListener("click", () => navigateTo(item.id));
     wrap.appendChild(btn);
   });
@@ -644,16 +605,13 @@ function buildTrack() {
   const orbitBtn = document.createElement("button");
   orbitBtn.id = "dock-orbit-btn";
   orbitBtn.className = "t-pt t-pt--orbit";
-  orbitBtn.setAttribute("data-label", "360° Aerial / Deck Orbit");
+  orbitBtn.setAttribute("aria-label", "Orbit around this view");
   orbitBtn.innerHTML = `
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
       <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/>
       <path d="M21 3v5h-5"/>
     </svg>
-    <div class="t-text">
-      <span class="t-badge">MOTION</span>
-      <span class="t-label">Orbit 360°</span>
-    </div>
+    <span class="t-label">Orbit</span>
   `;
   orbitBtn.addEventListener("click", () => window.triggerCurrentOrbit());
   wrap.appendChild(orbitBtn);
@@ -688,139 +646,76 @@ function buildExplorerMenus() {
   // 1. Top Mood Quick-Bar (#mood-quick-bar)
   const moodBar = document.getElementById("mood-quick-bar");
   if (moodBar) {
-    const quickMoods = [
-      { id: "mood-day-sunny", label: "Noon Sun", code: "97757" },
-      { id: "mood-soft-lighting", label: "Coastal Mist", code: "97750" },
-      { id: "mood-day-to-rain", label: "Sun → Rain", code: "97748" },
-      { id: "mood-rain-loop", label: "Storm Loop", code: "97749" },
-      { id: "mood-day-to-night", label: "Dusk Cycle", code: "97753" },
-      { id: "mood-night-loop", label: "Night LEDs", code: "97754" }
-    ];
-    moodBar.innerHTML = quickMoods.map(m => `
-      <button class="mood-pill" data-clip-code="${m.code}" data-clip-id="${m.id}" onclick="triggerCatalogClip('${m.id}')" title="${m.label}">
+    moodBar.innerHTML = cat.moods.map(m => `
+      <button class="mood-pill" data-clip-code="${m.code}" data-clip-id="${m.id}" onclick="triggerCatalogClip('${m.id}')" title="${m.sub}">
         <span class="mood-pill-dot" data-mood="${m.id}"></span>
-        <span class="mood-pill-lbl">${m.label}</span>
+        <span class="mood-pill-lbl">${m.name}</span>
       </button>
     `).join("");
   }
 
-  // 2. Explorer Drawer — Tab 1: MATERIALS & COLORS (8 videos)
+  // Swatch grid (Finishes & Lighting tabs): square tile + short name
+  const swatchGrid = items => `
+    <div class="exp-swatch-grid">
+      ${items.map(item => `
+        <button class="exp-tile" data-clip-code="${item.code}" data-clip-id="${item.id}" onclick="triggerCatalogClip('${item.id}')" title="${item.desc || item.sub}">
+          <span class="exp-tile-swatch" style="background: ${item.swatch}"></span>
+          <span class="exp-tile-name">${item.name}</span>
+        </button>
+      `).join("")}
+    </div>
+  `;
+  const section = (title, meta, body) => `
+    <div class="exp-section">
+      <div class="exp-section-head">
+        <h4>${title}</h4>
+        <span>${meta}</span>
+      </div>
+      ${body}
+    </div>
+  `;
+  // Row list (Camera moves & Orbits tabs)
+  const rowList = items => `
+    <div class="exp-list">
+      ${items.map(item => `
+        <button class="exp-list-item" data-clip-code="${item.code}" data-clip-id="${item.id}" onclick="triggerCatalogClip('${item.id}')">
+          <div class="exp-list-info">
+            <div class="exp-list-title">${item.name}</div>
+            <div class="exp-list-sub">${item.sub}</div>
+          </div>
+          <span class="exp-list-play" aria-hidden="true">
+            <svg viewBox="0 0 12 12" width="10" height="10" fill="currentColor"><path d="M4 2.8v6.4L9.2 6z"/></svg>
+          </span>
+        </button>
+      `).join("")}
+    </div>
+  `;
+
+  // 2. Drawer — Finishes
   const matContainer = document.getElementById("exp-tab-materials");
   if (matContainer) {
-    const renderMatGroup = (title, subtitle, items) => `
-      <div class="exp-section">
-        <div class="exp-section-head">
-          <h4>${title}</h4>
-          <span>${subtitle}</span>
-        </div>
-        <div class="exp-cards-grid">
-          ${items.map(item => `
-            <button class="exp-card" data-clip-code="${item.code}" data-clip-id="${item.id}" onclick="triggerCatalogClip('${item.id}')">
-              <div class="exp-swatch" style="background: ${item.swatch}">
-                <span class="exp-code-badge">CLIP #${item.code}</span>
-              </div>
-              <div class="exp-card-body">
-                <div class="exp-card-cat">${item.category}</div>
-                <div class="exp-card-title">${item.name}</div>
-                <div class="exp-card-desc">${item.desc}</div>
-              </div>
-            </button>
-          `).join("")}
-        </div>
-      </div>
-    `;
-
     matContainer.innerHTML =
-      renderMatGroup("Exterior Hull Paint", "Aerodynamic Superstructure & Hull Finishes", cat.materials.hull) +
-      renderMatGroup("Aft Deck Planking & Loungers", "Marine Teak & Weatherproof Loro Piana Bouclé", cat.materials.deck) +
-      renderMatGroup("Main Salon Bespoke Interior", "Italian Velvet, Linen & Bianco Carrara Stone", cat.materials.salon);
+      section("Hull color", `${cat.materials.hull.length} finishes`, swatchGrid(cat.materials.hull)) +
+      section("Aft deck", "Sofas and flooring", swatchGrid(cat.materials.deck)) +
+      section("Salon", "Sofas, fabrics and stone", swatchGrid(cat.materials.salon));
   }
 
-  // 3. Explorer Drawer — Tab 2: CAMERA TRANSITIONS (11 videos)
+  // 3. Drawer — Camera moves
   const camContainer = document.getElementById("exp-tab-cameras");
   if (camContainer) {
-    camContainer.innerHTML = `
-      <div class="exp-section">
-        <div class="exp-section-head">
-          <h4>Cinematic Camera Flights</h4>
-          <span>11 Bespoke Aerial & Interior Tracking Shots</span>
-        </div>
-        <div class="exp-list">
-          ${cat.cameraTransitions.map(c => `
-            <button class="exp-list-item" data-clip-code="${c.code}" data-clip-id="${c.id}" onclick="triggerCatalogClip('${c.id}')">
-              <div class="exp-list-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
-              </div>
-              <div class="exp-list-info">
-                <div class="exp-list-title">${c.name}</div>
-                <div class="exp-list-sub">${c.sub}</div>
-              </div>
-              <div class="exp-list-meta">
-                <span class="exp-code-pill">#${c.code}</span>
-                <span class="exp-play-tag">FLY ▶</span>
-              </div>
-            </button>
-          `).join("")}
-        </div>
-      </div>
-    `;
+    camContainer.innerHTML = section("Camera moves", "Fly from one area of the yacht to another", rowList(cat.cameraTransitions));
   }
 
-  // 4. Explorer Drawer — Tab 3: ORBITS & LOOPS (5 videos)
+  // 4. Drawer — Orbits & still views
   const orbitContainer = document.getElementById("exp-tab-orbits");
   if (orbitContainer) {
-    orbitContainer.innerHTML = `
-      <div class="exp-section">
-        <div class="exp-section-head">
-          <h4>360° Orbits & Living Loops</h4>
-          <span>5 Continuous Marine Perspectives</span>
-        </div>
-        <div class="exp-list">
-          ${cat.orbits.map(o => `
-            <button class="exp-list-item" data-clip-code="${o.code}" data-clip-id="${o.id}" onclick="triggerCatalogClip('${o.id}')">
-              <div class="exp-list-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><ellipse cx="12" cy="12" rx="10" ry="4.2"/><path d="M12 2a15.3 15.3 0 0 1 0 20 15.3 15.3 0 0 1 0-20z"/></svg>
-              </div>
-              <div class="exp-list-info">
-                <div class="exp-list-title">${o.name}</div>
-                <div class="exp-list-sub">${o.sub}</div>
-              </div>
-              <div class="exp-list-meta">
-                <span class="exp-badge-type">${o.badge}</span>
-                <span class="exp-code-pill">#${o.code}</span>
-              </div>
-            </button>
-          `).join("")}
-        </div>
-      </div>
-    `;
+    orbitContainer.innerHTML = section("Orbits", "Circle around the yacht or hold a still view", rowList(cat.orbits));
   }
 
-  // 5. Explorer Drawer — Tab 4: LIGHTING & WEATHER MOODS (6 videos)
+  // 5. Drawer — Lighting & weather
   const moodContainer = document.getElementById("exp-tab-moods");
   if (moodContainer) {
-    moodContainer.innerHTML = `
-      <div class="exp-section">
-        <div class="exp-section-head">
-          <h4>Atmosphere, Weather & Marine Illumination</h4>
-          <span>6 Environmental Simulations · Sun, Mist, Rain & Night Underwater LEDs</span>
-        </div>
-        <div class="exp-cards-grid">
-          ${cat.moods.map(m => `
-            <button class="exp-card" data-clip-code="${m.code}" data-clip-id="${m.id}" onclick="triggerCatalogClip('${m.id}')">
-              <div class="exp-swatch" style="background: ${m.swatch}">
-                <span class="exp-code-badge">CLIP #${m.code}</span>
-                <span class="exp-type-tag">${m.badge}</span>
-              </div>
-              <div class="exp-card-body">
-                <div class="exp-card-title">${m.name}</div>
-                <div class="exp-card-desc">${m.sub}</div>
-              </div>
-            </button>
-          `).join("")}
-        </div>
-      </div>
-    `;
+    moodContainer.innerHTML = section("Lighting", "Time of day and weather", swatchGrid(cat.moods));
   }
 }
 
@@ -919,7 +814,7 @@ window.submitDossierLead = function submitDossierLead(e) {
   if (e) e.preventDefault();
   const btn = document.getElementById("dos-submit-btn");
   if (btn) {
-    btn.textContent = "✓ Private Consultation & Dossier Requested";
+    btn.textContent = "✓ Request sent — we will be in touch";
     btn.classList.add("confirmed");
   }
 };
@@ -932,7 +827,7 @@ function updateTelemetryHud({ code, name, isLoop, isTransition }) {
   if (codeEl) codeEl.textContent = `#${code}`;
   if (nameEl) nameEl.textContent = name;
   if (modeEl) {
-    modeEl.textContent = isLoop ? "LOOP" : (isTransition ? "MOTION" : "READY");
+    modeEl.textContent = isLoop ? "Loop" : (isTransition ? "Playing" : "Still");
     modeEl.className = "hud-mode-badge " + (isLoop ? "is-loop" : "is-once");
   }
 }
