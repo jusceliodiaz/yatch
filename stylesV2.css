@@ -3899,3 +3899,609 @@ html, body {
   }
 }
 
+
+/* ══════════════════════════════════════════════════════════════════════════
+   GROUPED CONTROLS — less on screen at once, nothing removed.
+   Atmosphere -> dropdown · Shop/AI/Gallery -> Tools menu · swatches + cameras ->
+   one bottom console · playback HUD -> collapsed pill · landscape phones fit.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Brand header: scene context only; eyebrow & coordinates on hover ── */
+@media (hover: hover) {
+  #brand-header:not(:hover) .brand-eyebrow,
+  #brand-header:not(:hover) .brand-coords {
+    display: none;
+  }
+}
+
+/* ── Shared dropdown (popover) pattern ── */
+.pop-wrap {
+  position: relative;
+}
+
+.pop-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  height: 44px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid var(--navy-border);
+  background: var(--navy-glass);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.35);
+  color: #f8fafc;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  transition: border-color 180ms ease, background 180ms ease;
+}
+.pop-toggle:hover,
+.pop-wrap.open > .pop-toggle {
+  border-color: var(--gold-border);
+  background: rgba(20, 30, 48, 0.9);
+}
+
+.pop-toggle-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 1.1;
+}
+.pop-toggle-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--warm);
+}
+#mood-toggle-lbl {
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.pop-chevron {
+  opacity: 0.7;
+  transition: transform 200ms ease;
+}
+.pop-wrap.open .pop-chevron {
+  transform: rotate(180deg);
+}
+
+.pop-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  z-index: 90;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 210px;
+  padding: 6px;
+  border-radius: 16px;
+  background: var(--navy-glass-heavy);
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  border: 1px solid var(--navy-border);
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.55);
+  opacity: 0;
+  visibility: hidden;
+  transform: translate(-50%, -4px);
+  transition: opacity 160ms ease, transform 160ms ease, visibility 0s linear 160ms;
+}
+.pop-menu--right {
+  left: auto;
+  right: 0;
+  transform: translateY(-4px);
+}
+.pop-wrap.open > .pop-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, 0);
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+.pop-wrap.open > .pop-menu--right {
+  transform: translateY(0);
+}
+
+/* Atmosphere list inside its dropdown */
+#mood-wrap #mood-quick-bar {
+  flex-direction: column;
+  align-items: stretch;
+  overflow: visible;
+  max-width: none;
+  border-radius: 16px;
+  padding: 6px;
+  background: var(--navy-glass-heavy);
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.55);
+}
+#mood-wrap .mood-pill {
+  justify-content: flex-start;
+  width: 100%;
+  height: 38px;
+  padding: 0 12px;
+  border-radius: 10px;
+  font-size: 12px;
+}
+
+/* ── Tools menu (FF&E Decor, AI Studio, Gallery) ── */
+#tools-toggle {
+  position: relative;
+}
+#tools-dot {
+  display: none;
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--warm);
+  box-shadow: 0 0 0 2px rgba(9, 15, 26, 0.9);
+}
+#tools-wrap:has(#shop-btn-badge.show, #gallery-btn-badge.show) #tools-dot {
+  display: block;
+}
+
+#tools-menu .tools-item,
+#tools-menu #shop-btn {
+  position: relative;
+  top: auto;
+  right: auto;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 11px;
+  width: 100%;
+  height: 42px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: none;
+  color: #f1f5f9;
+  font-family: var(--font-sans);
+  font-size: 12.5px;
+  font-weight: 600;
+  text-align: left;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 160ms ease;
+}
+#tools-menu .tools-item:hover,
+#tools-menu .tools-item.active {
+  background: rgba(255, 255, 255, 0.08);
+}
+#tools-menu .tools-item svg {
+  color: var(--warm);
+  flex-shrink: 0;
+}
+#tools-menu #shop-btn-badge,
+#tools-menu #gallery-btn-badge {
+  position: static;
+  margin-left: auto;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  font-size: 10px;
+}
+
+/* Spec-total pill sits under the dock instead of colliding with it */
+#shop-total-pill {
+  top: max(72px, calc(env(safe-area-inset-top, 18px) + 54px));
+  right: max(22px, env(safe-area-inset-right, 22px));
+}
+
+/* ── Bottom console: scene options + camera dock as one panel ── */
+#bottom-console {
+  position: fixed;
+  left: 50%;
+  bottom: max(20px, env(safe-area-inset-bottom, 20px));
+  transform: translateX(-50%);
+  z-index: 45;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  max-width: min(960px, calc(100vw - 32px));
+  padding: 6px;
+  border-radius: 22px;
+  background: var(--navy-glass);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border: 1px solid var(--navy-border);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+}
+/* Gold hairline: the helm-console signature */
+#bottom-console::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: 18%;
+  right: 18%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--warm), transparent);
+  opacity: 0.7;
+  pointer-events: none;
+}
+@media (min-width: 1241px) {
+  #bottom-console {
+    max-width: min(960px, calc(100vw - 640px));
+  }
+}
+
+#bottom-console #context-config-bar {
+  position: static;
+  transform: none;
+  left: auto;
+  bottom: auto;
+  max-width: 100%;
+  min-width: 0;
+  padding: 4px 8px 8px;
+  gap: 10px;
+  border: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0;
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: none;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+#bottom-console #context-config-bar::-webkit-scrollbar {
+  display: none;
+}
+/* Auto margins centre the row but collapse to 0 when it overflows (no clipped start) */
+#bottom-console .ctx-bar-eyebrow {
+  margin-left: auto;
+}
+#bottom-console .ctx-bar-items {
+  margin-right: auto;
+}
+
+#bottom-console #track {
+  position: static;
+  transform: none;
+  left: auto;
+  bottom: auto;
+  max-width: 100%;
+  padding: 6px 2px 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: none;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+#bottom-console #track::-webkit-scrollbar {
+  display: none;
+}
+#bottom-console #track-pts {
+  width: max-content;
+  margin: 0 auto;
+}
+#bottom-console .t-pt {
+  height: 46px;
+}
+
+/* ── Playback HUD: collapsed to name + progress; controls on demand ── */
+#telemetry-hud {
+  width: 270px;
+  padding: 10px 12px;
+}
+#telemetry-hud .hud-info-row {
+  margin-bottom: 7px;
+}
+#telemetry-hud #hud-progress-bar {
+  height: 3px;
+  margin-bottom: 0;
+}
+#hud-more {
+  display: none;
+  margin-top: 9px;
+}
+#telemetry-hud.expanded #hud-more {
+  display: block;
+}
+.hud-expand-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.06);
+  color: #f8fafc;
+  cursor: pointer;
+  transition: background 160ms ease;
+}
+.hud-expand-btn:hover {
+  background: rgba(255, 255, 255, 0.16);
+}
+.hud-expand-btn svg {
+  transition: transform 200ms ease;
+}
+#telemetry-hud.expanded .hud-expand-btn svg {
+  transform: rotate(180deg);
+}
+
+/* ── Keyboard focus for the grouped controls ── */
+.pop-toggle:focus-visible,
+.tools-item:focus-visible,
+.top-action-btn:focus-visible,
+.mood-pill:focus-visible,
+.ctx-swatch-btn:focus-visible,
+.ctx-action-btn:focus-visible,
+.hud-expand-btn:focus-visible,
+#bottom-console .t-pt:focus-visible {
+  outline: 2px solid var(--warm);
+  outline-offset: 2px;
+}
+
+/* ── Tablets & phones (portrait) ── */
+@media (max-width: 900px) {
+  #tools-toggle span:not(#tools-dot) {
+    display: none;
+  }
+  #bottom-console {
+    max-width: calc(100vw - 16px);
+  }
+}
+
+@media (max-width: 768px) {
+  .pop-toggle {
+    height: 36px;
+    padding: 0 12px;
+    gap: 7px;
+  }
+  .pop-toggle-eyebrow {
+    display: none;
+  }
+  #mood-toggle-lbl {
+    font-size: 11px;
+  }
+  #bottom-console {
+    bottom: max(8px, env(safe-area-inset-bottom, 8px));
+    padding: 4px;
+    border-radius: 18px;
+  }
+  #bottom-console #context-config-bar {
+    padding: 3px 6px 6px;
+    gap: 8px;
+  }
+  #bottom-console #track {
+    padding: 4px 0 0;
+  }
+  #bottom-console .t-pt {
+    height: 44px;
+  }
+  #shop-total-pill {
+    top: max(54px, calc(env(safe-area-inset-top, 10px) + 44px));
+    right: max(10px, env(safe-area-inset-right, 10px));
+    height: 34px;
+    padding: 0 12px;
+  }
+}
+
+/* ── Phones in landscape: two thin strips, the stage stays clear ── */
+@media (orientation: landscape) and (max-height: 520px) {
+  #brand-header {
+    top: max(8px, env(safe-area-inset-top, 8px));
+    left: max(10px, env(safe-area-inset-left, 10px));
+    padding: 5px 11px;
+    border-radius: 11px;
+    gap: 0;
+  }
+  #brand-header .brand-eyebrow,
+  #brand-header .brand-divider,
+  #brand-header .brand-telemetry {
+    display: none;
+  }
+  .brand-title {
+    font-size: 15px;
+  }
+
+  #top-right-dock {
+    top: max(8px, env(safe-area-inset-top, 8px));
+    right: max(10px, env(safe-area-inset-right, 10px));
+    gap: 5px;
+  }
+  #top-right-dock .top-action-btn {
+    height: 34px;
+    min-width: 34px;
+    padding: 0 8px;
+    border-radius: 10px;
+    justify-content: center;
+  }
+  #top-right-dock .top-action-btn span:not(#tools-dot) {
+    display: none;
+  }
+  #top-right-dock #dossier-btn span {
+    display: inline;
+  }
+  #top-right-dock #dossier-btn {
+    padding: 0 10px;
+    font-size: 11px;
+  }
+
+  /* Atmosphere + 360° share the top strip, centred */
+  #scene-controls {
+    top: max(8px, env(safe-area-inset-top, 8px));
+    width: auto;
+    gap: 5px;
+  }
+  .pop-toggle {
+    height: 34px;
+    padding: 0 11px;
+    gap: 7px;
+  }
+  .pop-toggle-eyebrow {
+    display: none;
+  }
+  #mood-toggle-lbl {
+    font-size: 11px;
+  }
+  #pano-btn {
+    height: 34px;
+    padding: 0 10px;
+    font-size: 11px;
+  }
+  #pano-btn svg {
+    width: 15px;
+    height: 15px;
+  }
+  .pop-menu {
+    max-height: calc(100dvh - 60px);
+    overflow-y: auto;
+  }
+  #mood-wrap .mood-pill {
+    height: 32px;
+    font-size: 11px;
+  }
+
+  #shop-total-pill {
+    top: max(48px, calc(env(safe-area-inset-top, 8px) + 40px));
+    right: max(10px, env(safe-area-inset-right, 10px));
+    height: 30px;
+    padding: 0 11px;
+  }
+
+  /* Console becomes a single row: cameras | scene options */
+  #bottom-console {
+    bottom: max(6px, env(safe-area-inset-bottom, 6px));
+    flex-direction: row;
+    align-items: center;
+    max-width: calc(100vw - 20px - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px));
+    padding: 4px;
+    border-radius: 16px;
+  }
+  #bottom-console #track {
+    order: -1;
+    flex-shrink: 0;
+    padding: 0;
+    overflow: visible;
+  }
+  #bottom-console #track-pts {
+    gap: 3px;
+  }
+  #bottom-console .t-pt,
+  #bottom-console .t-pt.active {
+    height: 38px;
+    min-width: 38px;
+    max-width: 38px;
+    padding: 0;
+    border-radius: 10px;
+    gap: 0;
+  }
+  #bottom-console .t-pt svg {
+    width: 17px;
+    height: 17px;
+  }
+  #bottom-console .t-pt .t-text {
+    display: none;
+  }
+  #bottom-console #context-config-bar {
+    flex: 1 1 auto;
+    min-width: 0;
+    margin-left: 6px;
+    padding: 0 4px 0 8px;
+    gap: 6px;
+    border-bottom: 0;
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  #bottom-console .ctx-bar-eyebrow {
+    font-size: 8px;
+    letter-spacing: 0.08em;
+    margin-left: 0;
+  }
+  #bottom-console .ctx-swatch-btn,
+  #bottom-console .ctx-action-btn {
+    height: 30px;
+    padding: 0 9px 0 6px;
+    font-size: 10.5px;
+    gap: 5px;
+  }
+  #bottom-console .ctx-action-btn {
+    padding: 0 9px;
+  }
+  #bottom-console .ctx-swatch-dot {
+    width: 13px;
+    height: 13px;
+  }
+
+  /* Studio drawer: side sheet instead of an 84vh bottom sheet */
+  #explorer-drawer {
+    top: max(8px, env(safe-area-inset-top, 8px));
+    bottom: max(8px, env(safe-area-inset-bottom, 8px));
+    right: max(8px, env(safe-area-inset-right, 8px));
+    left: auto;
+    width: min(440px, 62vw);
+    height: auto;
+    max-height: none;
+    border-radius: 18px;
+    padding-bottom: 0;
+    transform: translateX(calc(100% + 24px));
+  }
+  #explorer-drawer.open {
+    transform: translateX(0);
+  }
+  .exp-drawer-header {
+    padding: 10px 16px 8px;
+  }
+  .exp-title {
+    font-size: 18px;
+  }
+  .exp-tabs {
+    padding: 6px 10px;
+  }
+  .exp-cards-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Modals & panels scroll inside the short viewport */
+  #dossier-modal {
+    padding: 8px;
+    align-items: center;
+  }
+  .dossier-card,
+  #ai-panel,
+  #gallery-card,
+  #shop-order-card,
+  #shop-place-card,
+  #shop-ar-card,
+  #shop3d-card {
+    max-height: calc(100dvh - 16px);
+    overflow-y: auto;
+  }
+  .dossier-card {
+    border-radius: 18px;
+  }
+  .dossier-specs-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .poi-btn {
+    width: 30px;
+    height: 30px;
+  }
+  .poi-name {
+    font-size: 9px;
+    padding: 3px 8px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pop-menu,
+  .pop-chevron,
+  .hud-expand-btn svg,
+  #explorer-drawer {
+    transition: none !important;
+  }
+}

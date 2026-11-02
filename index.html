@@ -19,7 +19,7 @@
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
     />
-    <link rel="stylesheet" href="stylesV2.css?v=5" />
+    <link rel="stylesheet" href="stylesV2.css?v=6" />
   </head>
   <body>
     <div id="cursor"></div>
@@ -54,7 +54,17 @@
 
     <!-- ══ TOP CENTER: ATMOSPHERE, WEATHER & LIGHTING BAR + 360° PANO ══ -->
     <div id="scene-controls">
-      <div id="mood-quick-bar" role="group" aria-label="Atmosphere and Illumination"></div>
+      <div class="pop-wrap" id="mood-wrap">
+        <button id="mood-toggle" class="pop-toggle" type="button" data-pop="mood-wrap" aria-expanded="false" aria-controls="mood-quick-bar" title="Atmosphere and lighting">
+          <span id="mood-toggle-dot" class="mood-pill-dot" data-mood="mood-day-sunny"></span>
+          <span class="pop-toggle-text">
+            <span class="pop-toggle-eyebrow">Atmosphere</span>
+            <span id="mood-toggle-lbl">Noon Sun</span>
+          </span>
+          <svg class="pop-chevron" viewBox="0 0 12 12" width="10" height="10" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2.5 4.5L6 8l3.5-3.5" /></svg>
+        </button>
+        <div id="mood-quick-bar" class="pop-menu" role="group" aria-label="Atmosphere and Illumination"></div>
+      </div>
       <button id="pano-btn" type="button" aria-label="Open 360° Panorama" title="Interactive 360° Panorama">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
           <ellipse cx="12" cy="12" rx="10" ry="4.2" />
@@ -75,30 +85,45 @@
         <span class="btn-count-pill">29</span>
       </button>
 
-      <button id="shop-btn" class="top-action-btn" type="button" onclick="shopToggle()" title="Bespoke Marine Outfitting & FF&E">
-        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M3 9l1.5-5h15L21 9" />
-          <path d="M3 9h18v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9z" />
-        </svg>
-        <span>FF&amp;E Decor</span>
-        <span id="shop-btn-badge"></span>
-      </button>
+      <div class="pop-wrap" id="tools-wrap">
+        <button id="tools-toggle" class="top-action-btn" type="button" data-pop="tools-wrap" aria-expanded="false" aria-controls="tools-menu" aria-label="Tools: FF&amp;E Decor, AI Studio, Gallery" title="FF&amp;E Decor, AI Studio & Gallery">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3.5" y="3.5" width="7" height="7" rx="1.5" />
+            <rect x="13.5" y="3.5" width="7" height="7" rx="1.5" />
+            <rect x="3.5" y="13.5" width="7" height="7" rx="1.5" />
+            <rect x="13.5" y="13.5" width="7" height="7" rx="1.5" />
+          </svg>
+          <span>Tools</span>
+          <span id="tools-dot" aria-hidden="true"></span>
+        </button>
+        <div id="tools-menu" class="pop-menu pop-menu--right" role="menu">
+          <button id="shop-btn" class="tools-item" type="button" role="menuitem" onclick="shopToggle()" title="Bespoke Marine Outfitting & FF&E">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 9l1.5-5h15L21 9" />
+              <path d="M3 9h18v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9z" />
+            </svg>
+            <span class="tools-item-lbl">FF&amp;E Decor</span>
+            <span id="shop-btn-badge"></span>
+          </button>
 
-      <button id="ai-trigger-btn" class="top-action-btn" type="button" onclick="aiTogglePanel()" title="AI Render & Video Studio">
-        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 3l1.9 4.6L18.5 9.5l-4.6 1.9L12 16l-1.9-4.6L5.5 9.5l4.6-1.9L12 3z" />
-        </svg>
-        <span>AI Studio</span>
-      </button>
+          <button id="ai-trigger-btn" class="tools-item" type="button" role="menuitem" onclick="aiTogglePanel()" title="AI Render & Video Studio">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 3l1.9 4.6L18.5 9.5l-4.6 1.9L12 16l-1.9-4.6L5.5 9.5l4.6-1.9L12 3z" />
+            </svg>
+            <span class="tools-item-lbl">AI Studio</span>
+          </button>
 
-      <button id="gallery-btn" class="top-action-btn top-action-btn--icon" type="button" onclick="galleryToggle()" title="Session Render Gallery">
-        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="3" y="3" width="18" height="18" rx="2" />
-          <circle cx="8.5" cy="8.5" r="1.5" fill="currentColor" stroke="none" />
-          <path d="M21 15l-5-5L5 21" />
-        </svg>
-        <span id="gallery-btn-badge"></span>
-      </button>
+          <button id="gallery-btn" class="tools-item" type="button" role="menuitem" onclick="galleryToggle()" title="Session Render Gallery">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2" />
+              <circle cx="8.5" cy="8.5" r="1.5" fill="currentColor" stroke="none" />
+              <path d="M21 15l-5-5L5 21" />
+            </svg>
+            <span class="tools-item-lbl">Render Gallery</span>
+            <span id="gallery-btn-badge"></span>
+          </button>
+        </div>
+      </div>
 
       <button id="dossier-btn" class="top-action-btn top-action-btn--gold" type="button" onclick="toggleDossierModal(true)" title="View Yacht Specification Dossier & Request Private Sea Trial">
         <span>Yacht Dossier</span>
@@ -107,22 +132,28 @@
 
     <div id="shop-total-pill" tabindex="-1" title="Bespoke Outfitting Summary"></div>
 
-    <!-- ══ CONTEXT-AWARE ON-STAGE SWATCH & FLIGHT BAR ══ -->
-    <div id="context-config-bar" aria-label="Scene Bespoke Controls"></div>
+    <!-- ══ BOTTOM CONSOLE: SCENE OPTIONS + CAMERA VIEWPOINT DOCK ══ -->
+    <div id="bottom-console">
+      <!-- Context-aware swatch & flight row -->
+      <div id="context-config-bar" aria-label="Scene Bespoke Controls"></div>
+      <!-- Camera viewpoint dock -->
+      <div id="track"></div>
+    </div>
 
-    <!-- ══ BOTTOM CAMERA VIEWPOINT DOCK ══ -->
-    <div id="track"></div>
-
-    <!-- ══ BOTTOM LEFT / RIGHT: MP4 TELEMETRY & PLAYBACK HUD ══ -->
+    <!-- ══ BOTTOM LEFT: PLAYBACK HUD (collapsed by default) ══ -->
     <div id="telemetry-hud">
       <div class="hud-info-row">
         <span id="hud-clip-code" class="hud-code-pill">#97757</span>
         <span id="hud-clip-name" class="hud-clip-title">Yacht Exterior Static Loop</span>
         <span id="hud-clip-mode" class="hud-mode-badge is-loop">LOOP</span>
+        <button id="hud-expand" class="hud-expand-btn" type="button" onclick="toggleHudExpanded()" aria-expanded="false" aria-controls="hud-more" title="Playback controls">
+          <svg viewBox="0 0 12 12" width="10" height="10" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2.5 7.5L6 4l3.5 3.5" /></svg>
+        </button>
       </div>
       <div id="hud-progress-bar" title="Click to scrub MP4 timeline">
         <div id="hud-progress-fill"></div>
       </div>
+      <div id="hud-more">
       <div class="hud-controls-row">
         <span id="hud-timecode">0.0s / 10.0s</span>
         <div class="hud-btns">
@@ -146,6 +177,7 @@
           <button class="speed-pill-btn" data-speed="2.5" type="button" onclick="setGlobalVideoSpeed(2.5)">2.5x</button>
           <button class="speed-pill-btn" data-speed="3" type="button" onclick="setGlobalVideoSpeed(3)">3x</button>
         </div>
+      </div>
       </div>
     </div>
 
@@ -629,8 +661,8 @@
       }
     </script>
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
-    <script src="scenes-fpV2.js?v=4"></script>
-    <script src="script-fpV2.js?v=4"></script>
+    <script src="scenes-fpV2.js?v=5"></script>
+    <script src="script-fpV2.js?v=5"></script>
     <script src="shopV2.js?v=4"></script>
     <script type="module" src="shop3dV2.js?v=4"></script>
     <script type="module" src="pano360V2.js?v=4"></script>

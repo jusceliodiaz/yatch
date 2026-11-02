@@ -1,6 +1,6 @@
 /* ══════════════════════════════════════════════════════════════════════════
    YACHT EXPLORER V2 — SCENE, CAMERA, MATERIAL, LIGHTING & MOOD CONFIGURATION
-   Maps all 29 MP4 videos in /videos to structured interactive triggers.
+   Maps all 29 videos (H.264 MP4 in /videos_web, 720p copies in /videos_web_m) to structured interactive triggers.
    ══════════════════════════════════════════════════════════════════════════ */
 
 const CONFIG_V2 = {
@@ -64,10 +64,10 @@ const CONFIG_V2 = {
     horizon: {
       title: "Mediterranean Cove & Horizon",
       subtitle: "High-altitude drone vantage overlooking the turquoise anchorage",
-      video: "videos_webm/magnific_loopable-video-camera-estatica_wan_1080p_16-9_30fps_97740.webm",
+      video: "videos_web/magnific_loopable-video-camera-estatica_wan_1080p_16-9_30fps_97740.mp4",
       loop: true,
       videoId: "97740",
-      orbitVideo: "videos_webm/magnific_loopable-video-turn-around-the-yatch-vendo-o-horiz_wan_1080p_16-9_30fps_97739.webm",
+      orbitVideo: "videos_web/magnific_loopable-video-turn-around-the-yatch-vendo-o-horiz_wan_1080p_16-9_30fps_97739.mp4",
       orbitId: "97739",
       orbitLabel: "Horizon Drone Orbit",
       pois: [
@@ -99,10 +99,10 @@ const CONFIG_V2 = {
     exterior: {
       title: "Yacht Exterior Profile",
       subtitle: "68-foot aerodynamic hull in emerald cove waters",
-      video: "videos_webm/magnific_loopable-video-static-camera_wan_1080p_16-9_30fps_97757.webm",
+      video: "videos_web/magnific_loopable-video-static-camera_wan_1080p_16-9_30fps_97757.mp4",
       loop: true,
       videoId: "97757",
-      orbitVideo: "videos_webm/magnific_360-em-volta-do-yach-mesma-atura-de-camera_seedance_1080p_16-9_24fps_97756.webm",
+      orbitVideo: "videos_web/magnific_360-em-volta-do-yach-mesma-atura-de-camera_seedance_1080p_16-9_24fps_97756.mp4",
       orbitId: "97756",
       orbitLabel: "360° Yacht Orbit",
       pano: "aerial",
@@ -149,10 +149,10 @@ const CONFIG_V2 = {
     deck: {
       title: "Aft Deck & Stern Lounge",
       subtitle: "Open-air teak terrace with twin modular sun-loungers",
-      video: "videos_webm/magnific_loopable-video-turn-around-the-sofas_wan_1080p_16-9_30fps_97755.webm",
+      video: "videos_web/magnific_loopable-video-turn-around-the-sofas_wan_1080p_16-9_30fps_97755.mp4",
       loop: true,
       videoId: "97755",
-      orbitVideo: "videos_webm/magnific_loopable-video-turn-around-the-sofas_wan_1080p_16-9_30fps_97755.webm",
+      orbitVideo: "videos_web/magnific_loopable-video-turn-around-the-sofas_wan_1080p_16-9_30fps_97755.mp4",
       orbitId: "97755",
       orbitLabel: "Turn Around Deck Sofas",
       pois: [
@@ -197,7 +197,7 @@ const CONFIG_V2 = {
     flybridge: {
       title: "Hardtop & Navigation Domes",
       subtitle: "Carbon-fiber superstructure with dual satellite domes and glazing",
-      video: "videos_webm/magnific_transicao-suave-de-troca-de-camera-de-longe-pra-pe_wan_1080p_16-9_30fps_97743.webm",
+      video: "videos_web/magnific_transicao-suave-de-troca-de-camera-de-longe-pra-pe_wan_1080p_16-9_30fps_97743.mp4",
       loop: false,
       holdLastFrame: true,
       videoId: "97743",
@@ -231,7 +231,7 @@ const CONFIG_V2 = {
     salon: {
       title: "Panoramic Main Salon",
       subtitle: "360-degree glazed living area with bespoke Italian upholstery",
-      video: "videos_webm/magnific_loopable-video-transicao-suave-de-troca-de-camera-_wan_1080p_16-9_30fps_97732.webm",
+      video: "videos_web/magnific_loopable-video-transicao-suave-de-troca-de-camera-_wan_1080p_16-9_30fps_97732.mp4",
       loop: false,
       holdLastFrame: true,
       videoId: "97732",
@@ -281,110 +281,110 @@ const CONFIG_V2 = {
     exterior: {
       horizon: {
         clipId: "cam-exterior-to-horizon",
-        src: "videos_webm/magnific_transicao-suave-de-troca-de-camera-de-perto-do-yat_wan_1080p_16-9_30fps_97741.webm",
+        src: "videos_web/magnific_transicao-suave-de-troca-de-camera-de-perto-do-yat_wan_1080p_16-9_30fps_97741.mp4",
         endBehavior: "startSceneLoop"
       },
       deck: {
         clipId: "cam-exterior-to-deck",
-        src: "videos_webm/magnific_transicao-suave-de-troca-de-camera-de-longe-pra-pe_wan_1080p_16-9_30fps_97744.webm",
+        src: "videos_web/magnific_transicao-suave-de-troca-de-camera-de-longe-pra-pe_wan_1080p_16-9_30fps_97744.mp4",
         endBehavior: "holdEndFrame"
       },
       flybridge: {
         clipId: "cam-exterior-to-flybridge",
-        src: "videos_webm/magnific_transicao-suave-de-troca-de-camera-de-longe-pra-pe_wan_1080p_16-9_30fps_97743.webm",
+        src: "videos_web/magnific_transicao-suave-de-troca-de-camera-de-longe-pra-pe_wan_1080p_16-9_30fps_97743.mp4",
         endBehavior: "holdEndFrame"
       },
       salon: {
         clipId: "cam-exterior-to-salon",
-        src: "videos_webm/magnific_loopable-video-transicao-suave-de-troca-de-camera-_wan_1080p_16-9_30fps_97737.webm",
+        src: "videos_web/magnific_loopable-video-transicao-suave-de-troca-de-camera-_wan_1080p_16-9_30fps_97737.mp4",
         endBehavior: "holdEndFrame"
       }
     },
     horizon: {
       salon: {
         clipId: "cam-horizon-to-salon",
-        src: "videos_webm/magnific_loopable-video-transicao-suave-de-troca-de-camera-_wan_1080p_16-9_30fps_97734.webm",
+        src: "videos_web/magnific_loopable-video-transicao-suave-de-troca-de-camera-_wan_1080p_16-9_30fps_97734.mp4",
         endBehavior: "holdEndFrame"
       },
       exterior: {
         clipId: "cam-exterior-static",
-        src: "videos_webm/magnific_loopable-video-static-camera_wan_1080p_16-9_30fps_97757.webm",
+        src: "videos_web/magnific_loopable-video-static-camera_wan_1080p_16-9_30fps_97757.mp4",
         endBehavior: "startSceneLoop"
       },
       deck: {
         clipId: "cam-exterior-to-deck",
-        src: "videos_webm/magnific_transicao-suave-de-troca-de-camera-de-longe-pra-pe_wan_1080p_16-9_30fps_97744.webm",
+        src: "videos_web/magnific_transicao-suave-de-troca-de-camera-de-longe-pra-pe_wan_1080p_16-9_30fps_97744.mp4",
         endBehavior: "holdEndFrame"
       },
       flybridge: {
         clipId: "cam-exterior-to-flybridge",
-        src: "videos_webm/magnific_transicao-suave-de-troca-de-camera-de-longe-pra-pe_wan_1080p_16-9_30fps_97743.webm",
+        src: "videos_web/magnific_transicao-suave-de-troca-de-camera-de-longe-pra-pe_wan_1080p_16-9_30fps_97743.mp4",
         endBehavior: "holdEndFrame"
       }
     },
     deck: {
       salon: {
         clipId: "cam-deck-to-salon-a",
-        src: "videos_webm/magnific_loopable-video-transicao-suave-de-troca-de-camera-_wan_1080p_16-9_30fps_97732.webm",
+        src: "videos_web/magnific_loopable-video-transicao-suave-de-troca-de-camera-_wan_1080p_16-9_30fps_97732.mp4",
         endBehavior: "holdEndFrame"
       },
       flybridge: {
         clipId: "cam-deck-to-flybridge",
-        src: "videos_webm/magnific_transicao-suave-de-troca-de-camera-de-do-sofa-para_wan_1080p_16-9_30fps_97742.webm",
+        src: "videos_web/magnific_transicao-suave-de-troca-de-camera-de-do-sofa-para_wan_1080p_16-9_30fps_97742.mp4",
         endBehavior: "holdEndFrame"
       },
       horizon: {
         clipId: "cam-deck-to-horizon",
-        src: "videos_webm/magnific_loopable-video-transicao-suave-de-troca-de-camera-_wan_1080p_16-9_30fps_97738.webm",
+        src: "videos_web/magnific_loopable-video-transicao-suave-de-troca-de-camera-_wan_1080p_16-9_30fps_97738.mp4",
         endBehavior: "startSceneLoop"
       },
       exterior: {
         clipId: "cam-exterior-static",
-        src: "videos_webm/magnific_loopable-video-static-camera_wan_1080p_16-9_30fps_97757.webm",
+        src: "videos_web/magnific_loopable-video-static-camera_wan_1080p_16-9_30fps_97757.mp4",
         endBehavior: "startSceneLoop"
       }
     },
     flybridge: {
       salon: {
         clipId: "cam-flybridge-to-salon-a",
-        src: "videos_webm/magnific_loopable-video-transicao-suave-de-troca-de-camera-_wan_1080p_16-9_30fps_97733.webm",
+        src: "videos_web/magnific_loopable-video-transicao-suave-de-troca-de-camera-_wan_1080p_16-9_30fps_97733.mp4",
         endBehavior: "holdEndFrame"
       },
       exterior: {
         clipId: "cam-exterior-static",
-        src: "videos_webm/magnific_loopable-video-static-camera_wan_1080p_16-9_30fps_97757.webm",
+        src: "videos_web/magnific_loopable-video-static-camera_wan_1080p_16-9_30fps_97757.mp4",
         endBehavior: "startSceneLoop"
       },
       deck: {
         clipId: "cam-exterior-to-deck",
-        src: "videos_webm/magnific_transicao-suave-de-troca-de-camera-de-longe-pra-pe_wan_1080p_16-9_30fps_97744.webm",
+        src: "videos_web/magnific_transicao-suave-de-troca-de-camera-de-longe-pra-pe_wan_1080p_16-9_30fps_97744.mp4",
         endBehavior: "holdEndFrame"
       },
       horizon: {
         clipId: "cam-exterior-to-horizon",
-        src: "videos_webm/magnific_transicao-suave-de-troca-de-camera-de-perto-do-yat_wan_1080p_16-9_30fps_97741.webm",
+        src: "videos_web/magnific_transicao-suave-de-troca-de-camera-de-perto-do-yat_wan_1080p_16-9_30fps_97741.mp4",
         endBehavior: "startSceneLoop"
       }
     },
     salon: {
       exterior: {
         clipId: "cam-exterior-static",
-        src: "videos_webm/magnific_loopable-video-static-camera_wan_1080p_16-9_30fps_97757.webm",
+        src: "videos_web/magnific_loopable-video-static-camera_wan_1080p_16-9_30fps_97757.mp4",
         endBehavior: "startSceneLoop"
       },
       deck: {
         clipId: "orbit-deck-sofas",
-        src: "videos_webm/magnific_loopable-video-turn-around-the-sofas_wan_1080p_16-9_30fps_97755.webm",
+        src: "videos_web/magnific_loopable-video-turn-around-the-sofas_wan_1080p_16-9_30fps_97755.mp4",
         endBehavior: "startSceneLoop"
       },
       flybridge: {
         clipId: "cam-exterior-to-flybridge",
-        src: "videos_webm/magnific_transicao-suave-de-troca-de-camera-de-longe-pra-pe_wan_1080p_16-9_30fps_97743.webm",
+        src: "videos_web/magnific_transicao-suave-de-troca-de-camera-de-longe-pra-pe_wan_1080p_16-9_30fps_97743.mp4",
         endBehavior: "holdEndFrame"
       },
       horizon: {
         clipId: "cam-deck-to-horizon",
-        src: "videos_webm/magnific_loopable-video-transicao-suave-de-troca-de-camera-_wan_1080p_16-9_30fps_97738.webm",
+        src: "videos_web/magnific_loopable-video-transicao-suave-de-troca-de-camera-_wan_1080p_16-9_30fps_97738.mp4",
         endBehavior: "startSceneLoop"
       }
     }
@@ -400,7 +400,7 @@ const CONFIG_V2 = {
         name: "Mediterranean Noon",
         sub: "Crystal turquoise water · Direct sun loop",
         scene: "exterior",
-        src: "videos_webm/magnific_loopable-video-static-camera_wan_1080p_16-9_30fps_97757.webm",
+        src: "videos_web/magnific_loopable-video-static-camera_wan_1080p_16-9_30fps_97757.mp4",
         loop: true,
         badge: "STATIC LOOP",
         swatch: "linear-gradient(135deg, #38bdf8 0%, #0284c7 50%, #facc15 100%)"
@@ -411,7 +411,7 @@ const CONFIG_V2 = {
         name: "Soft Coastal Mist",
         sub: "Smooth illumination shift · Diffused sky & warm teak",
         scene: "exterior",
-        src: "videos_webm/magnific_transio-suave-de-iluminao-_wan_1080p_16-9_30fps_97750.webm",
+        src: "videos_web/magnific_transio-suave-de-iluminao-_wan_1080p_16-9_30fps_97750.mp4",
         loop: false,
         holdLastFrame: true,
         badge: "LIGHT TRANSITION",
@@ -423,8 +423,8 @@ const CONFIG_V2 = {
         name: "Sun to Summer Rain",
         sub: "Weather transition · Rippling rain & wet teak deck",
         scene: "exterior",
-        src: "videos_webm/magnific_loopable-video-transio-suave-de-dia-pra-chuva_wan_1080p_16-9_30fps_97748.webm",
-        followUpSrc: "videos_webm/magnific_loopable-video-static-camera_wan_1080p_16-9_30fps_97749.webm",
+        src: "videos_web/magnific_loopable-video-transio-suave-de-dia-pra-chuva_wan_1080p_16-9_30fps_97748.mp4",
+        followUpSrc: "videos_web/magnific_loopable-video-static-camera_wan_1080p_16-9_30fps_97749.mp4",
         followUpCode: "97749",
         loop: false,
         badge: "WEATHER + LOOP",
@@ -436,7 +436,7 @@ const CONFIG_V2 = {
         name: "Rainstorm Anchorage",
         sub: "Static camera loop · Misty cove & raindrop ripples",
         scene: "exterior",
-        src: "videos_webm/magnific_loopable-video-static-camera_wan_1080p_16-9_30fps_97749.webm",
+        src: "videos_web/magnific_loopable-video-static-camera_wan_1080p_16-9_30fps_97749.mp4",
         loop: true,
         badge: "STATIC LOOP",
         swatch: "linear-gradient(135deg, #64748b 0%, #334155 60%, #0f172a 100%)"
@@ -447,8 +447,8 @@ const CONFIG_V2 = {
         name: "Dusk Illumination Cycle",
         sub: "Day to night transition · Warm cabin & cyan underwater LEDs",
         scene: "exterior",
-        src: "videos_webm/magnific_loopable-video-_wan_1080p_16-9_30fps_97753.webm",
-        followUpSrc: "videos_webm/magnific_loopable-video-_wan_1080p_16-9_30fps_97754.webm",
+        src: "videos_web/magnific_loopable-video-_wan_1080p_16-9_30fps_97753.mp4",
+        followUpSrc: "videos_web/magnific_loopable-video-_wan_1080p_16-9_30fps_97754.mp4",
         followUpCode: "97754",
         loop: false,
         badge: "LIGHTING CYCLE",
@@ -460,7 +460,7 @@ const CONFIG_V2 = {
         name: "Starlight & Underwater Glow",
         sub: "Night static loop · Full architectural & marine LEDs",
         scene: "exterior",
-        src: "videos_webm/magnific_loopable-video-_wan_1080p_16-9_30fps_97754.webm",
+        src: "videos_web/magnific_loopable-video-_wan_1080p_16-9_30fps_97754.mp4",
         loop: true,
         badge: "NIGHT LOOP",
         swatch: "linear-gradient(135deg, #090d16 0%, #0e7490 55%, #f59e0b 100%)"
@@ -477,7 +477,7 @@ const CONFIG_V2 = {
           category: "Hull Finish",
           desc: "Signature satin-metallic titanium hull with dark carbon superstructure",
           scene: "exterior",
-          src: "videos_webm/magnific_loopable-video-static-camera_wan_1080p_16-9_30fps_97757.webm",
+          src: "videos_web/magnific_loopable-video-static-camera_wan_1080p_16-9_30fps_97757.mp4",
           loop: true,
           swatch: "linear-gradient(135deg, #94a3b8 0%, #475569 100%)"
         },
@@ -488,7 +488,7 @@ const CONFIG_V2 = {
           category: "Hull Finish",
           desc: "Smooth color morph: Deep Navy → Glacier Pearl White → Titanium Grey",
           scene: "exterior",
-          src: "videos_webm/magnific_loopable-video-transicao-suave-de-troca-de-cor-do-_wan_1080p_16-9_30fps_97745.webm",
+          src: "videos_web/magnific_loopable-video-transicao-suave-de-troca-de-cor-do-_wan_1080p_16-9_30fps_97745.mp4",
           loop: true,
           swatch: "linear-gradient(135deg, #1e293b 0%, #f8fafc 50%, #64748b 100%)"
         },
@@ -499,7 +499,7 @@ const CONFIG_V2 = {
           category: "Hull Finish",
           desc: "Smooth color morph: Titanium Grey → Vibrant Cobalt Blue → Titanium",
           scene: "exterior",
-          src: "videos_webm/magnific_loopable-video-transicao-suave-de-troca-de-cor-do-_wan_1080p_16-9_30fps_97746.webm",
+          src: "videos_web/magnific_loopable-video-transicao-suave-de-troca-de-cor-do-_wan_1080p_16-9_30fps_97746.mp4",
           loop: true,
           swatch: "linear-gradient(135deg, #64748b 0%, #1d4ed8 50%, #3b82f6 100%)"
         },
@@ -510,7 +510,7 @@ const CONFIG_V2 = {
           category: "Hull Finish",
           desc: "Smooth hull transition from Titanium Grey to Deep Midnight Navy Blue",
           scene: "exterior",
-          src: "videos_webm/magnific_loopable-video-transicao-suave-de-troca-de-cor-do-_wan_1080p_16-9_30fps_97747.webm",
+          src: "videos_web/magnific_loopable-video-transicao-suave-de-troca-de-cor-do-_wan_1080p_16-9_30fps_97747.mp4",
           loop: false,
           holdLastFrame: true,
           swatch: "linear-gradient(135deg, #64748b 0%, #0f172a 60%, #1e3a8a 100%)"
@@ -524,7 +524,7 @@ const CONFIG_V2 = {
           category: "Aft Deck Upholstery",
           desc: "Weatherproof Loro Piana marine bouclé from Warm Ivory to Charcoal Grey",
           scene: "deck",
-          src: "videos_webm/magnific_transio-suave-da-troca-do-material-do-sofa_wan_1080p_16-9_30fps_97751.webm",
+          src: "videos_web/magnific_transio-suave-da-troca-do-material-do-sofa_wan_1080p_16-9_30fps_97751.mp4",
           loop: false,
           holdLastFrame: true,
           swatch: "linear-gradient(135deg, #f5f0e6 0%, #374151 60%, #1f2937 100%)"
@@ -536,7 +536,7 @@ const CONFIG_V2 = {
           category: "Aft Deck Flooring",
           desc: "Natural Burmese teak caulked planks morphing to dark brushed thermo-ash",
           scene: "deck",
-          src: "videos_webm/magnific_transio-suave-da-troca-do-piso_wan_1080p_16-9_30fps_97752.webm",
+          src: "videos_web/magnific_transio-suave-da-troca-do-piso_wan_1080p_16-9_30fps_97752.mp4",
           loop: false,
           holdLastFrame: true,
           swatch: "linear-gradient(135deg, #d6b88e 0%, #57534e 55%, #292524 100%)"
@@ -550,7 +550,7 @@ const CONFIG_V2 = {
           category: "Interior Full Suite",
           desc: "Complete interior transformation: Sand linen sofas to Navy velvet & terracotta pillows",
           scene: "salon",
-          src: "videos_webm/magnific_loopable-video-transicao-suave-de-troca-de-materia_wan_1080p_16-9_30fps_97729.webm",
+          src: "videos_web/magnific_loopable-video-transicao-suave-de-troca-de-materia_wan_1080p_16-9_30fps_97729.mp4",
           loop: false,
           holdLastFrame: true,
           swatch: "linear-gradient(135deg, #e7e0d6 0%, #1e3a5f 60%, #c26d3a 100%)"
@@ -562,7 +562,7 @@ const CONFIG_V2 = {
           category: "Interior Upholstery",
           desc: "Asymmetric port & starboard sofa upholstery transition with warm oak flooring",
           scene: "salon",
-          src: "videos_webm/magnific_loopable-video-transicao-suave-de-troca-de-materia_wan_1080p_16-9_30fps_97730.webm",
+          src: "videos_web/magnific_loopable-video-transicao-suave-de-troca-de-materia_wan_1080p_16-9_30fps_97730.mp4",
           loop: false,
           holdLastFrame: true,
           swatch: "linear-gradient(135deg, #f3ede2 0%, #4b5563 50%, #1e3a8a 100%)"
@@ -574,7 +574,7 @@ const CONFIG_V2 = {
           category: "Interior Stone & Millwork",
           desc: "Salon coffee table morphing between smoked walnut-oak and white Carrara marble",
           scene: "salon",
-          src: "videos_webm/magnific_loopable-video-transicao-suave-de-troca-de-materia_wan_1080p_16-9_30fps_97731.webm",
+          src: "videos_web/magnific_loopable-video-transicao-suave-de-troca-de-materia_wan_1080p_16-9_30fps_97731.mp4",
           loop: true,
           swatch: "linear-gradient(135deg, #44372d 0%, #f8fafc 50%, #cbd5e1 100%)"
         }
@@ -589,8 +589,7 @@ const CONFIG_V2 = {
         name: "360° Full Yacht Orbit",
         sub: "Constant-altitude aerial turnaround around the entire vessel",
         scene: "exterior",
-        src: "videos_webm/magnific_360-em-volta-do-yach-mesma-atura-de-camera_seedance_1080p_16-9_24fps_97756.webm",
-        fallbackMov: "videos_webm/magnific_360-em-volta-do-yach-mesma-atura-de-camera_seedance_1080p_16-9_24fps_97756.mov",
+        src: "videos_web/magnific_360-em-volta-do-yach-mesma-atura-de-camera_seedance_1080p_16-9_24fps_97756.mp4",
         loop: true,
         badge: "360° ORBIT"
       },
@@ -600,7 +599,7 @@ const CONFIG_V2 = {
         name: "Cove & Horizon Turnaround",
         sub: "High-altitude sweeping orbit revealing the coastline and sea horizon",
         scene: "horizon",
-        src: "videos_webm/magnific_loopable-video-turn-around-the-yatch-vendo-o-horiz_wan_1080p_16-9_30fps_97739.webm",
+        src: "videos_web/magnific_loopable-video-turn-around-the-yatch-vendo-o-horiz_wan_1080p_16-9_30fps_97739.mp4",
         loop: true,
         badge: "HORIZON ORBIT"
       },
@@ -610,7 +609,7 @@ const CONFIG_V2 = {
         name: "Aft Deck Lounge Orbit",
         sub: "180° arc around the stern cockpit sofas looking out to the horizon",
         scene: "deck",
-        src: "videos_webm/magnific_loopable-video-turn-around-the-sofas_wan_1080p_16-9_30fps_97755.webm",
+        src: "videos_web/magnific_loopable-video-turn-around-the-sofas_wan_1080p_16-9_30fps_97755.mp4",
         loop: true,
         badge: "DECK ORBIT"
       },
@@ -620,7 +619,7 @@ const CONFIG_V2 = {
         name: "Cove Aerial Static Loop",
         sub: "Locked-off high altitude perspective with gentle sea ripples",
         scene: "horizon",
-        src: "videos_webm/magnific_loopable-video-camera-estatica_wan_1080p_16-9_30fps_97740.webm",
+        src: "videos_web/magnific_loopable-video-camera-estatica_wan_1080p_16-9_30fps_97740.mp4",
         loop: true,
         badge: "STATIC LOOP"
       },
@@ -630,7 +629,7 @@ const CONFIG_V2 = {
         name: "Yacht Exterior Static Loop",
         sub: "Locked-off three-quarter stern profile in crystal water",
         scene: "exterior",
-        src: "videos_webm/magnific_loopable-video-static-camera_wan_1080p_16-9_30fps_97757.webm",
+        src: "videos_web/magnific_loopable-video-static-camera_wan_1080p_16-9_30fps_97757.mp4",
         loop: true,
         badge: "STATIC LOOP"
       }
@@ -645,7 +644,7 @@ const CONFIG_V2 = {
         to: "deck",
         name: "Exterior → Aft Deck Lounge",
         sub: "Smooth approach from port-quarter overview to the stern loungers",
-        src: "videos_webm/magnific_transicao-suave-de-troca-de-camera-de-longe-pra-pe_wan_1080p_16-9_30fps_97744.webm",
+        src: "videos_web/magnific_transicao-suave-de-troca-de-camera-de-longe-pra-pe_wan_1080p_16-9_30fps_97744.mp4",
         holdLastFrame: true
       },
       {
@@ -655,7 +654,7 @@ const CONFIG_V2 = {
         to: "flybridge",
         name: "Exterior → Hardtop & Radar",
         sub: "Push-in from medium exterior overview to the carbon hardtop domes",
-        src: "videos_webm/magnific_transicao-suave-de-troca-de-camera-de-longe-pra-pe_wan_1080p_16-9_30fps_97743.webm",
+        src: "videos_web/magnific_transicao-suave-de-troca-de-camera-de-longe-pra-pe_wan_1080p_16-9_30fps_97743.mp4",
         holdLastFrame: true
       },
       {
@@ -665,7 +664,7 @@ const CONFIG_V2 = {
         to: "salon",
         name: "Exterior → Main Salon Interior",
         sub: "Continuous flight from exterior overview across the deck into the salon",
-        src: "videos_webm/magnific_loopable-video-transicao-suave-de-troca-de-camera-_wan_1080p_16-9_30fps_97737.webm",
+        src: "videos_web/magnific_loopable-video-transicao-suave-de-troca-de-camera-_wan_1080p_16-9_30fps_97737.mp4",
         holdLastFrame: true
       },
       {
@@ -675,8 +674,8 @@ const CONFIG_V2 = {
         to: "horizon",
         name: "Exterior → Cove Horizon Ascent",
         sub: "Drone pullback from the yacht to the high Mediterranean cove vista",
-        src: "videos_webm/magnific_transicao-suave-de-troca-de-camera-de-perto-do-yat_wan_1080p_16-9_30fps_97741.webm",
-        followUpSrc: "videos_webm/magnific_loopable-video-camera-estatica_wan_1080p_16-9_30fps_97740.webm",
+        src: "videos_web/magnific_transicao-suave-de-troca-de-camera-de-perto-do-yat_wan_1080p_16-9_30fps_97741.mp4",
+        followUpSrc: "videos_web/magnific_loopable-video-camera-estatica_wan_1080p_16-9_30fps_97740.mp4",
         followUpCode: "97740"
       },
       {
@@ -686,7 +685,7 @@ const CONFIG_V2 = {
         to: "salon",
         name: "Aft Deck → Main Salon (Starboard Glide)",
         sub: "Sweeping glide over the aft loungers into the main cabin",
-        src: "videos_webm/magnific_loopable-video-transicao-suave-de-troca-de-camera-_wan_1080p_16-9_30fps_97732.webm",
+        src: "videos_web/magnific_loopable-video-transicao-suave-de-troca-de-camera-_wan_1080p_16-9_30fps_97732.mp4",
         holdLastFrame: true
       },
       {
@@ -696,7 +695,7 @@ const CONFIG_V2 = {
         to: "salon",
         name: "Aft Deck → Main Salon (Centerline Walk)",
         sub: "Low-angle tracking shot between the twin sofas through the glass doors",
-        src: "videos_webm/magnific_loopable-video-transicao-suave-de-troca-de-camera-_wan_1080p_16-9_30fps_97735.webm",
+        src: "videos_web/magnific_loopable-video-transicao-suave-de-troca-de-camera-_wan_1080p_16-9_30fps_97735.mp4",
         holdLastFrame: true
       },
       {
@@ -706,7 +705,7 @@ const CONFIG_V2 = {
         to: "flybridge",
         name: "Aft Deck → Hardtop Roof Crane",
         sub: "Vertical crane movement from the stern sofas up to the radar hardtop",
-        src: "videos_webm/magnific_transicao-suave-de-troca-de-camera-de-do-sofa-para_wan_1080p_16-9_30fps_97742.webm",
+        src: "videos_web/magnific_transicao-suave-de-troca-de-camera-de-do-sofa-para_wan_1080p_16-9_30fps_97742.mp4",
         holdLastFrame: true
       },
       {
@@ -716,8 +715,8 @@ const CONFIG_V2 = {
         to: "horizon",
         name: "Aft Deck → Cove Horizon Ascent",
         sub: "Long pullback from the cockpit lounge all the way to the high cove view",
-        src: "videos_webm/magnific_loopable-video-transicao-suave-de-troca-de-camera-_wan_1080p_16-9_30fps_97738.webm",
-        followUpSrc: "videos_webm/magnific_loopable-video-camera-estatica_wan_1080p_16-9_30fps_97740.webm",
+        src: "videos_web/magnific_loopable-video-transicao-suave-de-troca-de-camera-_wan_1080p_16-9_30fps_97738.mp4",
+        followUpSrc: "videos_web/magnific_loopable-video-camera-estatica_wan_1080p_16-9_30fps_97740.mp4",
         followUpCode: "97740"
       },
       {
@@ -727,7 +726,7 @@ const CONFIG_V2 = {
         to: "salon",
         name: "Hardtop → Main Salon (Port Glass Dive)",
         sub: "Camera descends from the radar roof through the panoramic side glazing",
-        src: "videos_webm/magnific_loopable-video-transicao-suave-de-troca-de-camera-_wan_1080p_16-9_30fps_97733.webm",
+        src: "videos_web/magnific_loopable-video-transicao-suave-de-troca-de-camera-_wan_1080p_16-9_30fps_97733.mp4",
         holdLastFrame: true
       },
       {
@@ -737,7 +736,7 @@ const CONFIG_V2 = {
         to: "salon",
         name: "Hardtop → Main Salon (Stern Overhang)",
         sub: "Curving descent around the aft hardtop overhang into the salon",
-        src: "videos_webm/magnific_loopable-video-transicao-suave-de-troca-de-camera-_wan_1080p_16-9_30fps_97736.webm",
+        src: "videos_web/magnific_loopable-video-transicao-suave-de-troca-de-camera-_wan_1080p_16-9_30fps_97736.mp4",
         holdLastFrame: true
       },
       {
@@ -747,7 +746,7 @@ const CONFIG_V2 = {
         to: "salon",
         name: "Cove Horizon → Main Salon (Epic Dive)",
         sub: "Spectacular long-range drone dive from the bay sky straight inside the yacht",
-        src: "videos_webm/magnific_loopable-video-transicao-suave-de-troca-de-camera-_wan_1080p_16-9_30fps_97734.webm",
+        src: "videos_web/magnific_loopable-video-transicao-suave-de-troca-de-camera-_wan_1080p_16-9_30fps_97734.mp4",
         holdLastFrame: true
       }
     ]

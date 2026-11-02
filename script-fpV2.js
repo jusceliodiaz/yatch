@@ -43,21 +43,52 @@ function preloadMp4Blob(rawSrc) {
   return p;
 }
 
+// Background preloads run through a small queue so they never compete with the
+// clip that is currently starting (downloading everything at once stalled playback).
+const preloadQueue = [];
+let preloadActive = 0;
+const PRELOAD_CONCURRENCY = MOBILE ? 1 : 2;
+
+function pumpPreloadQueue() {
+  while (preloadActive < PRELOAD_CONCURRENCY && preloadQueue.length) {
+    const src = preloadQueue.shift();
+    preloadActive++;
+    preloadMp4Blob(src).finally(() => {
+      preloadActive--;
+      pumpPreloadQueue();
+    });
+  }
+}
+
+function queuePreload(urls) {
+  const saveData = navigator.connection?.saveData;
+  if (saveData) return;
+  urls.filter(Boolean).forEach(src => {
+    if (!videoBlobs.has(resolveBestVideoFormat(src)) && !preloadQueue.includes(src)) preloadQueue.push(src);
+  });
+  pumpPreloadQueue();
+}
+
 function preloadNeighborsAndScene(sceneId) {
   const sc = CONFIG_V2.scenes[sceneId];
   if (!sc) return;
-  const urls = new Set([sc.video, sc.orbitVideo]);
+  // Navigation transitions first: they are what the visitor most likely clicks next.
+  preloadQueue.length = 0;
+  const urls = new Set([sc.video]);
   const trans = CONFIG_V2.transitions?.[sceneId] || {};
   Object.values(trans).forEach(t => t?.src && urls.add(t.src));
-  if (sceneId === "exterior") {
-    CONFIG_V2.catalog.materials.hull.forEach(m => urls.add(m.src));
-    CONFIG_V2.catalog.moods.forEach(m => urls.add(m.src));
-  } else if (sceneId === "deck") {
-    CONFIG_V2.catalog.materials.deck.forEach(m => urls.add(m.src));
-  } else if (sceneId === "salon") {
-    CONFIG_V2.catalog.materials.salon.forEach(m => urls.add(m.src));
+  urls.add(sc.orbitVideo);
+  if (!MOBILE) {
+    if (sceneId === "exterior") {
+      CONFIG_V2.catalog.materials.hull.forEach(m => urls.add(m.src));
+      CONFIG_V2.catalog.moods.forEach(m => urls.add(m.src));
+    } else if (sceneId === "deck") {
+      CONFIG_V2.catalog.materials.deck.forEach(m => urls.add(m.src));
+    } else if (sceneId === "salon") {
+      CONFIG_V2.catalog.materials.salon.forEach(m => urls.add(m.src));
+    }
   }
-  [...urls].filter(Boolean).forEach(preloadMp4Blob);
+  queuePreload([...urls]);
 }
 
 function applyVideoSpeed(vid, isLoopClip) {
@@ -317,13 +348,11 @@ function extractCodeFromSrc(src) {
   return m ? m[1] : "WEBM";
 }
 
+// All clips are H.264 MP4 (plays on every browser, hardware-decoded).
+// Phones get the 720p copies from videos_web_m/.
 function resolveBestVideoFormat(src) {
   if (!src) return src;
-  const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-  if (isSafari && src.endsWith(".webm")) {
-    return src.replace("videos_webm/", "videos_v2/").replace(/\.webm$/i, ".mp4");
-  }
-  return src;
+  return MOBILE ? src.replace("videos_web/", "videos_web_m/") : src;
 }
 
 /* ── SCENE NAVIGATION (Bottom Dock & Hotspots) ── */
@@ -799,7 +828,56 @@ function highlightActiveCatalogButtons(code) {
   document.querySelectorAll("[data-clip-code]").forEach(el => {
     el.classList.toggle("active", el.dataset.clipCode === String(code));
   });
+  // Mirror the active atmosphere on the collapsed dropdown button
+  const activeMood = document.querySelector(".mood-pill.active");
+  if (activeMood) {
+    const lbl = document.getElementById("mood-toggle-lbl");
+    const dot = document.getElementById("mood-toggle-dot");
+    if (lbl) lbl.textContent = activeMood.querySelector(".mood-pill-lbl")?.textContent || "";
+    if (dot) dot.dataset.mood = activeMood.dataset.clipId;
+  }
 }
+
+/* ── GROUPED CONTROLS: DROPDOWN POPOVERS & COLLAPSIBLE HUD ── */
+function closePopovers(except) {
+  document.querySelectorAll(".pop-wrap.open").forEach(wrap => {
+    if (wrap === except) return;
+    wrap.classList.remove("open");
+    wrap.querySelector("[data-pop]")?.setAttribute("aria-expanded", "false");
+  });
+}
+
+function initPopovers() {
+  document.querySelectorAll("[data-pop]").forEach(btn => {
+    const wrap = document.getElementById(btn.dataset.pop);
+    if (!wrap) return;
+    btn.addEventListener("click", e => {
+      e.stopPropagation();
+      const open = !wrap.classList.contains("open");
+      closePopovers(wrap);
+      wrap.classList.toggle("open", open);
+      btn.setAttribute("aria-expanded", String(open));
+    });
+    // Picking an item closes the menu
+    wrap.querySelector(".pop-menu")?.addEventListener("click", e => {
+      if (e.target.closest("button")) closePopovers();
+    });
+  });
+  document.addEventListener("click", e => {
+    if (!e.target.closest(".pop-wrap")) closePopovers();
+  });
+  document.addEventListener("keydown", e => {
+    if (e.key === "Escape") closePopovers();
+  });
+}
+
+window.toggleHudExpanded = function toggleHudExpanded() {
+  const hud = document.getElementById("telemetry-hud");
+  const btn = document.getElementById("hud-expand");
+  if (!hud) return;
+  const expanded = hud.classList.toggle("expanded");
+  btn?.setAttribute("aria-expanded", String(expanded));
+};
 
 /* ── EXPLORER DRAWER & SHIPYARD DOSSIER MODAL ── */
 let explorerOpen = false;
@@ -1337,6 +1415,7 @@ window.addEventListener("load", () => {
   initCursor();
   buildTrack();
   buildExplorerMenus();
+  initPopovers();
   initPanoBtn();
   initHudProgressTicker();
 
