@@ -19,7 +19,7 @@
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
     />
-    <link rel="stylesheet" href="stylesV2.css?v=6" />
+    <link rel="stylesheet" href="stylesV2.css?v=7" />
   </head>
   <body>
     <div id="cursor"></div>
@@ -52,7 +52,7 @@
       </div>
     </header>
 
-    <!-- ══ TOP CENTER: ATMOSPHERE, WEATHER & LIGHTING BAR + 360° PANO ══ -->
+    <!-- ══ TOP CENTER: ATMOSPHERE, WEATHER & LIGHTING DROPDOWN ══ -->
     <div id="scene-controls">
       <div class="pop-wrap" id="mood-wrap">
         <button id="mood-toggle" class="pop-toggle" type="button" data-pop="mood-wrap" aria-expanded="false" aria-controls="mood-quick-bar" title="Atmosphere and lighting">
@@ -65,13 +65,6 @@
         </button>
         <div id="mood-quick-bar" class="pop-menu" role="group" aria-label="Atmosphere and Illumination"></div>
       </div>
-      <button id="pano-btn" type="button" aria-label="Open 360° Panorama" title="Interactive 360° Panorama">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-          <ellipse cx="12" cy="12" rx="10" ry="4.2" />
-          <path d="M12 2a15.3 15.3 0 0 1 0 20 15.3 15.3 0 0 1 0-20z" />
-        </svg>
-        <span>360°</span>
-      </button>
     </div>
 
     <!-- ══ TOP RIGHT: BESPOKE STUDIO, FF&E SHOP, AI STUDIO & DOSSIER CTA ══ -->

@@ -4505,3 +4505,34 @@ html, body {
     transition: none !important;
   }
 }
+
+/* ── Top row: brand, atmosphere and action dock share one height & baseline ── */
+#brand-header {
+  box-sizing: border-box;
+  height: 44px;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+#top-right-dock .top-action-btn {
+  height: 44px;
+}
+@media (max-width: 768px) {
+  #brand-header {
+    height: 36px;
+  }
+  #top-right-dock .top-action-btn {
+    height: 36px;
+  }
+}
+@media (max-width: 380px) {
+  #brand-header,
+  #top-right-dock .top-action-btn {
+    height: 32px;
+  }
+}
+@media (orientation: landscape) and (max-height: 520px) {
+  #brand-header,
+  #top-right-dock .top-action-btn {
+    height: 34px;
+  }
+}
