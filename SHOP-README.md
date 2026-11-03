@@ -5,7 +5,7 @@
 - `styles.css` — atualizado: estilos do shop no final do arquivo
 - `shop.js` — NOVO: produtos, abas, cards, carrinho, order summary, IA "colocar na cena"
 - `shop3d.js` — NOVO: viewer 3D Three.js (GLB/GLTF e FBX, com pré-load e cache)
-- `scenes-fp.js` / `script-fp.js` — sem alterações (copiados só pra pasta ficar completa)
+- `scenes.js` / `script.js` — cenas, vídeos e o player principal (não fazem parte do shop)
 
 ## Modelos 3D
 Cada produto aponta para `assets/models/<id>.glb`:

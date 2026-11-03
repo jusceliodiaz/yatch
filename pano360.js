@@ -1,18 +1,39 @@
-/* ══════════════════════════════════════════════════════
-   PANO 360 — equirectangular panorama viewer (Three.js).
-   Ported from the 7mmstudio launching-page prototype: drag to look
-   around, wheel/pinch to zoom, hotspots to jump between panoramas.
-   One panorama per scene (aerial → Pool).
-   Exposes window.openPanoModal(sceneId) / window.closePanoModal().
-   ══════════════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════════════════════════════════
+   PANO 360 V2 — Equirectangular Panorama Viewer (Three.js)
+   Supports all V2 Yacht scenes with interactive hotspots.
+   ══════════════════════════════════════════════════════════════════════════ */
 
 import * as THREE from "three";
 
 const TOUR = {
   aerial: {
-    label: "Pool",
+    label: "Magnific 68' — 360° Marine Deck",
     src: "images/3dpano1b.png",
-    hotspots: []
+    hotspots: [
+      { lat: -6, lon: 140, label: "Aft Deck Lounge", leadsTo: "deck" },
+      { lat: -4, lon: 215, label: "Main Salon Interior", leadsTo: "salon" }
+    ]
+  },
+  exterior: {
+    label: "Magnific 68' — Exterior Anchorage 360°",
+    src: "images/3dpano1b.png",
+    hotspots: [
+      { lat: -6, lon: 140, label: "Main Salon Panorama", leadsTo: "salon" }
+    ]
+  },
+  deck: {
+    label: "Magnific 68' — Stern Terrace 360°",
+    src: "images/3dpano1.jpeg",
+    hotspots: [
+      { lat: -3, lon: 180, label: "Exterior Anchorage", leadsTo: "exterior" }
+    ]
+  },
+  salon: {
+    label: "Magnific 68' — Panoramic Salon 360°",
+    src: "images/3dpano1.jpeg",
+    hotspots: [
+      { lat: -5, lon: 175, label: "Exterior Anchorage", leadsTo: "exterior" }
+    ]
   }
 };
 
@@ -81,7 +102,7 @@ function navigateToPano(roomKey) {
   canvas.style.transition = hotspotsEl.style.transition = "opacity 0.3s ease";
   canvas.style.opacity = hotspotsEl.style.opacity = "0";
   setTimeout(() => {
-    loading.innerHTML = '<div id="pano-spinner"></div>Loading...';
+    loading.innerHTML = '<div id="pano-spinner"></div>Loading 360°...';
     loading.classList.remove("hidden");
     new THREE.TextureLoader().load(
       TOUR[roomKey].src,
@@ -198,9 +219,9 @@ function initViewer(roomKey) {
 }
 
 function openPanoModal(sceneId) {
-  if (!TOUR[sceneId]) return;
+  const key = TOUR[sceneId] ? sceneId : "aerial";
   loading.classList.remove("hidden");
-  loading.innerHTML = '<div id="pano-spinner"></div>Loading...';
+  loading.innerHTML = '<div id="pano-spinner"></div>Loading 360°...';
   hint.classList.remove("hidden");
   modal.setAttribute("aria-hidden", "false");
   modal.classList.add("open");
@@ -212,7 +233,7 @@ function openPanoModal(sceneId) {
   transitioning = false;
   canvas.style.opacity = "1";
   hotspotsEl.style.opacity = "1";
-  initViewer(sceneId);
+  initViewer(key);
 }
 
 function closePanoModal() {
@@ -229,9 +250,9 @@ function closePanoModal() {
 }
 
 document.addEventListener("keydown", e => { if (e.key === "Escape") closePanoModal(); });
-document.getElementById("pano-modal-backdrop").addEventListener("click", closePanoModal);
-document.getElementById("pano-modal-close").addEventListener("click", closePanoModal);
-document.getElementById("pano-modal-close-dock").addEventListener("click", closePanoModal);
+document.getElementById("pano-modal-backdrop")?.addEventListener("click", closePanoModal);
+document.getElementById("pano-modal-close")?.addEventListener("click", closePanoModal);
+document.getElementById("pano-modal-close-dock")?.addEventListener("click", closePanoModal);
 
 window.openPanoModal = openPanoModal;
 window.closePanoModal = closePanoModal;

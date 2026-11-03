@@ -1,8 +1,8 @@
-/* ══════════════════════════════════════════════════════
-   SHOP 3D — Three.js modal viewer for shop products.
+/* ══════════════════════════════════════════════════════════════════════════
+   SHOP 3D V2 — Three.js Modal Viewer for Yacht Bespoke FF&E Products
    Loads GLB/GLTF (or FBX) models, preloads and caches them.
    Exposes window.Shop3D = { open, close, preload }.
-   ══════════════════════════════════════════════════════ */
+   ══════════════════════════════════════════════════════════════════════════ */
 
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
@@ -20,7 +20,7 @@ let currentModel = null, rafId = null, openGen = 0;
 
 const gltfLoader = new GLTFLoader();
 const fbxLoader = new FBXLoader();
-const modelCache = new Map(); // url → Promise<THREE.Object3D>
+const modelCache = new Map();
 
 function initRenderer() {
   if (renderer) return;
@@ -28,18 +28,18 @@ function initRenderer() {
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.1;
+  renderer.toneMappingExposure = 1.15;
   stage.appendChild(renderer.domElement);
 
   scene = new THREE.Scene();
   camera = new THREE.PerspectiveCamera(40, 16 / 9, 0.05, 100);
 
-  const hemi = new THREE.HemisphereLight(0xffffff, 0x55503f, 1.4);
+  const hemi = new THREE.HemisphereLight(0xffffff, 0x334155, 1.5);
   scene.add(hemi);
-  const key = new THREE.DirectionalLight(0xfff2dd, 2.2);
+  const key = new THREE.DirectionalLight(0xfff2dd, 2.3);
   key.position.set(3, 5, 2.5);
   scene.add(key);
-  const fill = new THREE.DirectionalLight(0xdde8ff, 0.8);
+  const fill = new THREE.DirectionalLight(0xbae6fd, 0.9);
   fill.position.set(-4, 2, -3);
   scene.add(fill);
 
@@ -72,13 +72,11 @@ function loadUrl(url) {
       normalize(obj);
       return obj;
     });
-  // Remove failed loads from the cache so a retry is possible
   p.catch(() => modelCache.delete(url));
   modelCache.set(url, p);
   return p;
 }
 
-/* Center the model and scale it to a ~2 unit box */
 function normalize(obj) {
   const box = new THREE.Box3().setFromObject(obj);
   const size = box.getSize(new THREE.Vector3());
@@ -87,7 +85,7 @@ function normalize(obj) {
   const scale = 2 / maxDim;
   obj.scale.setScalar(scale);
   obj.position.sub(center.multiplyScalar(scale));
-  obj.position.y += (size.y * scale) / 2 - 1; // rest roughly on origin-ish
+  obj.position.y += (size.y * scale) / 2 - 1;
 }
 
 async function loadFirstAvailable(product, fallbacks) {
@@ -147,8 +145,8 @@ const Shop3D = {
     } catch (e) {
       if (gen !== openGen) return;
       spinner.classList.remove("visible");
-      titleEl.textContent = product.name + " — 3D model not found (add " + product.model + ")";
-      console.error("Shop3D:", e);
+      titleEl.textContent = product.name + " — 3D model not found";
+      console.error("Shop3D V2:", e);
     }
   },
 
@@ -161,9 +159,9 @@ const Shop3D = {
   }
 };
 
-modal.addEventListener("click", e => {
+modal?.addEventListener("click", e => {
   if (e.target === modal || e.target.dataset.close !== undefined) Shop3D.close();
 });
-document.getElementById("shop3d-close").addEventListener("click", () => Shop3D.close());
+document.getElementById("shop3d-close")?.addEventListener("click", () => Shop3D.close());
 
 window.Shop3D = Shop3D;
