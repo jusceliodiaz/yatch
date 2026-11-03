@@ -132,13 +132,6 @@ html, body {
   background: rgba(20,20,20,.75);
   border-radius: 2px;
 }
-/* 360° POI — swaps the generic +-cross icon for the orbit svg passed in
-   via JS (renderPOIs), tinted with the brand green. */
-.poi--pano .poi-btn::before, .poi--pano .poi-btn::after { display: none; }
-.poi--pano .poi-btn svg {
-  width: 16px; height: 16px;
-  color: var(--warm);
-}
 .poi-btn::before { width: 10px; height: 1.5px; }
 .poi-btn::after  { width: 1.5px; height: 10px; }
 
@@ -210,32 +203,6 @@ html, body {
   align-items: center;
   gap: 10px;
 }
-#pano-btn {
-  display: none;
-  align-items: center;
-  gap: 8px;
-  height: 44px;
-  padding: 0 18px 0 14px;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  background: rgba(120, 130, 140, 0.45);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  color: #fff;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  cursor: pointer;
-  transition: background 0.2s, border-color 0.2s;
-}
-#pano-btn.show { display: inline-flex; }
-#pano-btn svg { width: 18px; height: 18px; }
-#pano-btn:hover {
-  background: rgba(120, 130, 140, 0.62);
-  border-color: rgba(255, 255, 255, 0.28);
-}
-#pano-btn:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
 
 /* ── Day / night toggle — one pill, two round buttons (sun | moon) ── */
 #ab-slider {
@@ -270,7 +237,7 @@ html, body {
 .dn-btn:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
 #ab-slider.busy .dn-btn { pointer-events: none; }
 @media (hover: none) {
-  #pano-btn, .dn-btn { cursor: pointer; }
+  .dn-btn { cursor: pointer; }
 }
 
 #track-pts {
@@ -1067,7 +1034,6 @@ html, body {
 
   /* Second row on phones — the right-anchored total pill would collide. */
   #scene-controls { top: calc(max(20px, env(safe-area-inset-top, 20px)) + 56px); gap: 8px; }
-  #pano-btn { padding: 0 14px 0 12px; }
 }
 
 /* ══════════════════════════════════════════════════════
@@ -2111,202 +2077,6 @@ html, body {
   line-height: 1.45;
 }
 
-/* ══════════════════════════════════════════════════════
-   PANO 360° — equirectangular viewer modal, opened from a POI.
-   Chrome (badge/hint/close/label) floats over the photo itself, so it
-   stays a translucent frosted overlay regardless of theme — same logic
-   as the shop's AI/3D badges over product photos.
-   ══════════════════════════════════════════════════════ */
-#pano-modal {
-  position: fixed; inset: 0; z-index: 220;
-  display: flex; align-items: center; justify-content: center;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.35s ease;
-}
-#pano-modal.open { opacity: 1; pointer-events: auto; }
-#pano-modal-backdrop {
-  position: absolute; inset: 0;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  cursor: pointer;
-}
-#pano-modal-box {
-  position: relative;
-  width: min(96vw, 1440px);
-  height: min(92vh, 900px);
-  border-radius: 20px;
-  overflow: hidden;
-  background: #e9e1d0;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 0 40px 120px rgba(0, 0, 0, 0.5);
-  transform: scale(0.93);
-  transition: transform 0.4s ease;
-}
-#pano-modal.open #pano-modal-box { transform: scale(1); }
-#pano-modal-close {
-  position: absolute; top: 16px; right: 16px; z-index: 10;
-  width: 36px; height: 36px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.9);
-  border: none;
-  color: #14130f;
-  cursor: pointer;
-  font-size: 13px;
-  display: flex; align-items: center; justify-content: center;
-  transition: background 0.2s;
-}
-#pano-modal-close:hover { background: #fff; }
-/* Close dock — bottom-center pill, shown on both desktop and mobile
-   alongside the top-corner ✕ (the ✕ alone is a small, easy-to-miss
-   target, especially on touch). */
-#pano-modal-close-dock {
-  display: flex;
-  position: absolute;
-  bottom: max(24px, env(safe-area-inset-bottom, 24px));
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 12;
-  align-items: center;
-  gap: 8px;
-  padding: 13px 22px;
-  border: none;
-  border-radius: 999px;
-  background: rgba(20, 19, 15, 0.72);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  color: #fff;
-  cursor: pointer;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  transition: background 0.2s;
-}
-#pano-modal-close-dock:hover { background: rgba(20, 19, 15, 0.88); }
-#pano-modal-badge {
-  position: absolute; top: 16px; left: 16px; z-index: 10;
-  padding: 5px 13px;
-  border-radius: 20px;
-  background: var(--warm);
-  color: #14130f;
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  pointer-events: none;
-}
-#pano-canvas {
-  width: 100%; height: 100%;
-  display: block;
-  cursor: grab;
-  touch-action: none;
-}
-#pano-canvas:active { cursor: grabbing; }
-#pano-hint {
-  position: absolute;
-  /* Sits above the close dock instead of the screen edge. */
-  bottom: max(84px, calc(env(safe-area-inset-bottom, 0px) + 84px));
-  left: 50%;
-  transform: translateX(-50%);
-  padding: 7px 16px;
-  border-radius: 20px;
-  background: rgba(20, 19, 15, 0.6);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  color: #fff;
-  font-size: 10px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  pointer-events: none;
-  white-space: nowrap;
-  transition: opacity 0.5s;
-}
-#pano-hint.hidden { opacity: 0; }
-#pano-loading {
-  position: absolute; inset: 0;
-  display: flex; align-items: center; justify-content: center;
-  flex-direction: column;
-  gap: 12px;
-  background: #e9e1d0;
-  color: rgba(20, 19, 15, 0.5);
-  font-size: 10px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  transition: opacity 0.4s;
-}
-#pano-loading.hidden { opacity: 0; pointer-events: none; }
-#pano-spinner {
-  width: 28px; height: 28px;
-  border: 2px solid rgba(20, 19, 15, 0.12);
-  border-top-color: var(--warm);
-  border-radius: 50%;
-  animation: panoSpin 0.8s linear infinite;
-}
-@keyframes panoSpin { to { transform: rotate(360deg); } }
-#pano-room-label {
-  position: absolute; top: 16px; left: 50%;
-  transform: translateX(-50%);
-  background: rgba(255, 255, 255, 0.85);
-  color: #14130f;
-  font-size: 10.5px;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  padding: 6px 18px;
-  border-radius: 20px;
-  pointer-events: none;
-  z-index: 10;
-  white-space: nowrap;
-}
-#pano-hotspots { position: absolute; inset: 0; pointer-events: none; z-index: 5; }
-.pano-hotspot {
-  position: absolute;
-  pointer-events: auto;
-  transform: translate(-50%, -50%);
-  display: flex; flex-direction: column; align-items: center;
-  gap: 6px;
-  cursor: pointer;
-  transition: opacity 0.3s ease;
-}
-.pano-hotspot-dot {
-  width: 40px; height: 40px;
-  border-radius: 50%;
-  background: var(--warm);
-  border: 2px solid rgba(255, 255, 255, 0.9);
-  display: flex; align-items: center; justify-content: center;
-  color: #14130f;
-  transition: transform 0.2s ease;
-}
-.pano-hotspot:hover .pano-hotspot-dot { transform: scale(1.15); }
-.pano-hotspot-label {
-  background: rgba(255, 255, 255, 0.85);
-  color: #14130f;
-  font-size: 9.5px;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  padding: 4px 11px;
-  border-radius: 8px;
-  white-space: nowrap;
-}
-@media (max-width: 600px) {
-  #pano-modal-box { width: 100vw; height: 100vh; border-radius: 0; }
-  /* Full-bleed box touches the real screen edges on mobile — without this,
-     the badge/label land under the notch/status bar. */
-  /* The top-corner ✕ is unreliable on iPhone (small hit target right under
-     the notch/Dynamic Island) — hide it there, the bottom dock (shared with
-     desktop, positioned in the base rule above) is the only close action left. */
-  #pano-modal-close { display: none; }
-  #pano-modal-badge {
-    top: max(16px, env(safe-area-inset-top, 16px));
-    left: max(16px, env(safe-area-inset-left, 16px));
-  }
-  #pano-room-label { top: max(16px, env(safe-area-inset-top, 16px)); }
-}
-
 
 /* ══════════════════════════════════════════════════════════════════════════
    YACHT EXPLORER V2 — SUPERYACHT DIGITAL SHOWROOM OVERRIDES & NEW COMPONENTS
@@ -2559,12 +2329,6 @@ html, body {
 .mood-pill-dot[data-mood="mood-rain-loop"] { background: #64748b; }
 .mood-pill-dot[data-mood="mood-day-to-night"] { background: #f59e0b; }
 .mood-pill-dot[data-mood="mood-night-loop"] { background: #06b6d4; box-shadow: 0 0 8px #06b6d4; }
-
-#pano-btn {
-  height: 44px;
-  background: var(--navy-glass);
-  border-color: var(--navy-border);
-}
 
 /* ── TOP RIGHT: BESPOKE STUDIO, FF&E, AI & DOSSIER DOCK ── */
 #top-right-dock {
@@ -3586,14 +3350,6 @@ html, body {
     width: 7px;
     height: 7px;
   }
-  #pano-btn {
-    height: 34px;
-    padding: 0 10px;
-    font-size: 11px;
-  }
-  #pano-btn svg {
-    width: 15px;
-    height: 15px;
   }
 
   /* On-Stage Context Swatch Bar: floating above camera dock */
@@ -4305,7 +4061,7 @@ html, body {
     font-size: 11px;
   }
 
-  /* Atmosphere + 360° share the top strip, centred */
+  /* Atmosphere sits in the top strip, centred */
   #scene-controls {
     top: max(8px, env(safe-area-inset-top, 8px));
     width: auto;
@@ -4322,14 +4078,6 @@ html, body {
   #mood-toggle-lbl {
     font-size: 11px;
   }
-  #pano-btn {
-    height: 34px;
-    padding: 0 10px;
-    font-size: 11px;
-  }
-  #pano-btn svg {
-    width: 15px;
-    height: 15px;
   }
   .pop-menu {
     max-height: calc(100dvh - 60px);

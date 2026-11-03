@@ -20,7 +20,7 @@
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400..700&display=swap"
     />
-    <link rel="stylesheet" href="styles.css?v=2" />
+    <link rel="stylesheet" href="styles.css?v=3" />
   </head>
   <body>
     <!-- ══ PRELOADER: holds until the opening view can play without stalling ══ -->
@@ -588,27 +588,6 @@
       </div>
     </div>
 
-    <!-- PANO 360° MODAL -->
-    <div id="pano-modal" aria-hidden="true">
-      <div id="pano-modal-backdrop"></div>
-      <div id="pano-modal-box">
-        <button id="pano-modal-close" title="Close">✕</button>
-        <div id="pano-modal-badge">360°</div>
-        <div id="pano-room-label"></div>
-        <canvas id="pano-canvas"></canvas>
-        <div id="pano-hotspots"></div>
-        <div id="pano-hint">Drag to explore · Scroll to zoom</div>
-        <button id="pano-modal-close-dock" title="Close">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M18 6 6 18M6 6l12 12"/></svg>
-          Close
-        </button>
-        <div id="pano-loading">
-          <div id="pano-spinner"></div>
-          Loading 360°...
-        </div>
-      </div>
-    </div>
-
     <script type="importmap">
       {
         "imports": {
@@ -618,10 +597,9 @@
       }
     </script>
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
-    <script src="scenes.js?v=2"></script>
+    <script src="scenes.js?v=3"></script>
     <script src="script.js?v=2"></script>
     <script src="shop.js?v=1"></script>
     <script type="module" src="shop3d.js?v=1"></script>
-    <script type="module" src="pano360.js?v=1"></script>
   </body>
 </html>

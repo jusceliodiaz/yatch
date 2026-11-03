@@ -13,7 +13,7 @@ The visitor-facing interface is in English (`<html lang="en">`). Keep labels sho
 - Plain HTML, CSS and JavaScript; no framework or build step.
 - Static site deployed to Vercel through Git.
 - Delivered media is stored in the repository; masters are not.
-- Three.js (CDN) powers the optional 3D product viewer and 360° panorama; `<model-viewer>` (CDN) powers AR.
+- Three.js (CDN) powers the optional 3D product viewer; `<model-viewer>` (CDN) powers AR.
 
 ## Files
 
@@ -24,10 +24,9 @@ scenes.js      CONFIG_V2: poster, views (timeline), scene videos, frame sequence
 script.js      Preloader, video player, image-sequence player, navigation, dock, Customize drawer, dropdowns, AI Studio, gallery
 shop.js        Furniture shop catalog, cart and AI product placement (inherited IKEA content, see SHOP-README.md)
 shop3d.js      Three.js product viewer
-pano360.js     360° panorama viewer (no button on the page at the moment)
 videos_webm/   Delivered clips (VP9 WebM)
 videos/        Master clips (git-ignored)
-images/        Poster, favicon, panorama images and inherited prototype media
+images/        Poster, favicon and inherited prototype media
 ```
 
 ## Video

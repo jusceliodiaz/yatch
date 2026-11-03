@@ -82,8 +82,7 @@ const CONFIG_V2 = {
       videoId: "97757",
       orbitVideo: "videos_webm/main_around.webm",
       orbitId: "97756",
-      orbitLabel: "Orbit the yacht",
-      pano: "aerial"
+      orbitLabel: "Orbit the yacht"
     },
 
     deck: {
@@ -112,8 +111,7 @@ const CONFIG_V2 = {
       video: "videos_webm/deck_interior.webm",
       loop: false,
       holdLastFrame: true,
-      videoId: "97732",
-      pano: "aerial"
+      videoId: "97732"
     }
   },
 
