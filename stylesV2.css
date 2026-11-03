@@ -5303,3 +5303,10 @@ body {
 .exp-section-head span {
   text-align: left;
 }
+
+/* Playback HUD removed: the dock no longer needs to leave room for it */
+@media (min-width: 1241px) {
+  #bottom-console {
+    max-width: min(960px, calc(100vw - 32px));
+  }
+}

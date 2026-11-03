@@ -19,7 +19,7 @@
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400..700&display=swap"
     />
-    <link rel="stylesheet" href="stylesV2.css?v=9" />
+    <link rel="stylesheet" href="stylesV2.css?v=10" />
   </head>
   <body>
     <div id="cursor"></div>
@@ -31,7 +31,6 @@
       <video id="main-video" class="vid-active" muted loop playsinline preload="auto" poster="images/poster_yacht_v2.jpg?v=1"></video>
       <video id="ab-video-b" muted loop playsinline preload="auto"></video>
       <canvas id="seq-canvas"></canvas>
-      <div id="poi-layer"></div>
     </div>
 
     <div id="loader"><span></span><span></span><span></span></div>
@@ -131,47 +130,6 @@
       <div id="context-config-bar" aria-label="Options for this view"></div>
       <!-- Camera viewpoint dock -->
       <div id="track"></div>
-    </div>
-
-    <!-- ══ BOTTOM LEFT: PLAYBACK HUD (collapsed by default) ══ -->
-    <div id="telemetry-hud">
-      <div class="hud-info-row">
-        <span id="hud-clip-code" class="hud-code-pill">#97757</span>
-        <span id="hud-clip-name" class="hud-clip-title">Exterior still</span>
-        <span id="hud-clip-mode" class="hud-mode-badge is-loop">Loop</span>
-        <button id="hud-expand" class="hud-expand-btn" type="button" onclick="toggleHudExpanded()" aria-expanded="false" aria-controls="hud-more" title="Playback controls">
-          <svg viewBox="0 0 12 12" width="10" height="10" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2.5 7.5L6 4l3.5 3.5" /></svg>
-        </button>
-      </div>
-      <div id="hud-progress-bar" title="Click to jump within the clip">
-        <div id="hud-progress-fill"></div>
-      </div>
-      <div id="hud-more">
-      <div class="hud-controls-row">
-        <span id="hud-timecode">0.0s / 10.0s</span>
-        <div class="hud-btns">
-          <button class="hud-ctrl-btn" type="button" onclick="replayCurrentClip()" title="Play this clip again">
-            Replay
-          </button>
-          <button id="hud-loop-btn" class="hud-ctrl-btn" type="button" onclick="toggleForceLoop()" title="Keep repeating the current clip">
-            Repeat
-          </button>
-          <button id="hud-poi-toggle" class="hud-ctrl-btn active" type="button" onclick="togglePoisVisibility()" title="Show or hide the shortcuts on the image">
-            Shortcuts
-          </button>
-        </div>
-      </div>
-      <div class="hud-speed-row">
-        <span class="hud-speed-lbl">Speed</span>
-        <div class="hud-speed-pills">
-          <button class="speed-pill-btn" data-speed="1" type="button" onclick="setGlobalVideoSpeed(1)">1x</button>
-          <button class="speed-pill-btn" data-speed="1.5" type="button" onclick="setGlobalVideoSpeed(1.5)">1.5x</button>
-          <button class="speed-pill-btn active" data-speed="2" type="button" onclick="setGlobalVideoSpeed(2)">2x</button>
-          <button class="speed-pill-btn" data-speed="2.5" type="button" onclick="setGlobalVideoSpeed(2.5)">2.5x</button>
-          <button class="speed-pill-btn" data-speed="3" type="button" onclick="setGlobalVideoSpeed(3)">3x</button>
-        </div>
-      </div>
-      </div>
     </div>
 
     <!-- ══ BESPOKE STUDIO DRAWER (ALL 29 VIDEOS ORGANIZED IN 4 TABS) ══ -->
@@ -654,8 +612,8 @@
       }
     </script>
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
-    <script src="scenes-fpV2.js?v=7"></script>
-    <script src="script-fpV2.js?v=8"></script>
+    <script src="scenes-fpV2.js?v=8"></script>
+    <script src="script-fpV2.js?v=10"></script>
     <script src="shopV2.js?v=4"></script>
     <script type="module" src="shop3dV2.js?v=4"></script>
     <script type="module" src="pano360V2.js?v=4"></script>

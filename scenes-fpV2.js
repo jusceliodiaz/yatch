@@ -59,7 +59,7 @@ const CONFIG_V2 = {
     }
   ],
 
-  /* ── 2. SCENE DEFINITIONS & INTERACTIVE HOTSPOTS (POIs) ── */
+  /* ── 2. SCENE DEFINITIONS ── */
   scenes: {
     horizon: {
       title: "Aerial view",
@@ -69,31 +69,7 @@ const CONFIG_V2 = {
       videoId: "97740",
       orbitVideo: "videos_web/magnific_loopable-video-turn-around-the-yatch-vendo-o-horiz_wan_1080p_16-9_30fps_97739.mp4",
       orbitId: "97739",
-      orbitLabel: "Orbit the cove",
-      pois: [
-        {
-          x: 13,
-          y: 78,
-          type: "nav",
-          target: "exterior",
-          label: "Exterior"
-        },
-        {
-          x: 24,
-          y: 72,
-          type: "clip",
-          clipId: "cam-horizon-to-salon",
-          targetScene: "salon",
-          label: "Fly into the salon"
-        },
-        {
-          x: 52,
-          y: 44,
-          type: "clip",
-          clipId: "orbit-horizon",
-          label: "Orbit the cove"
-        }
-      ]
+      orbitLabel: "Orbit the cove"
     },
 
     exterior: {
@@ -105,45 +81,7 @@ const CONFIG_V2 = {
       orbitVideo: "videos_web/magnific_360-em-volta-do-yach-mesma-atura-de-camera_seedance_1080p_16-9_24fps_97756.mp4",
       orbitId: "97756",
       orbitLabel: "Orbit the yacht",
-      pano: "aerial",
-      pois: [
-        {
-          x: 34,
-          y: 66,
-          type: "nav",
-          target: "deck",
-          label: "Aft deck"
-        },
-        {
-          x: 47,
-          y: 47,
-          type: "nav",
-          target: "flybridge",
-          label: "Flybridge"
-        },
-        {
-          x: 42,
-          y: 56,
-          type: "nav",
-          target: "salon",
-          label: "Salon"
-        },
-        {
-          x: 72,
-          y: 28,
-          type: "nav",
-          target: "horizon",
-          label: "Aerial view"
-        },
-        {
-          x: 56,
-          y: 62,
-          type: "drawer",
-          drawerTab: "materials",
-          drawerSub: "hull",
-          label: "Hull color"
-        }
-      ]
+      pano: "aerial"
     },
 
     deck: {
@@ -154,44 +92,7 @@ const CONFIG_V2 = {
       videoId: "97755",
       orbitVideo: "videos_web/magnific_loopable-video-turn-around-the-sofas_wan_1080p_16-9_30fps_97755.mp4",
       orbitId: "97755",
-      orbitLabel: "Orbit the deck",
-      pois: [
-        {
-          x: 50,
-          y: 44,
-          type: "nav",
-          target: "salon",
-          label: "Salon"
-        },
-        {
-          x: 48,
-          y: 24,
-          type: "nav",
-          target: "flybridge",
-          label: "Flybridge"
-        },
-        {
-          x: 34,
-          y: 62,
-          type: "clip",
-          clipId: "mat-deck-sofa",
-          label: "Sofa fabric"
-        },
-        {
-          x: 52,
-          y: 76,
-          type: "clip",
-          clipId: "mat-deck-floor",
-          label: "Deck flooring"
-        },
-        {
-          x: 80,
-          y: 25,
-          type: "nav",
-          target: "horizon",
-          label: "Aerial view"
-        }
-      ]
+      orbitLabel: "Orbit the deck"
     },
 
     flybridge: {
@@ -200,32 +101,7 @@ const CONFIG_V2 = {
       video: "videos_web/magnific_transicao-suave-de-troca-de-camera-de-longe-pra-pe_wan_1080p_16-9_30fps_97743.mp4",
       loop: false,
       holdLastFrame: true,
-      videoId: "97743",
-      pois: [
-        {
-          x: 56,
-          y: 58,
-          type: "clip",
-          clipId: "cam-flybridge-to-salon-a",
-          targetScene: "salon",
-          label: "Salon via side glass"
-        },
-        {
-          x: 36,
-          y: 68,
-          type: "clip",
-          clipId: "cam-flybridge-to-salon-b",
-          targetScene: "salon",
-          label: "Salon via stern"
-        },
-        {
-          x: 24,
-          y: 34,
-          type: "nav",
-          target: "exterior",
-          label: "Exterior"
-        }
-      ]
+      videoId: "97743"
     },
 
     salon: {
@@ -235,44 +111,7 @@ const CONFIG_V2 = {
       loop: false,
       holdLastFrame: true,
       videoId: "97732",
-      pano: "aerial",
-      pois: [
-        {
-          x: 26,
-          y: 66,
-          type: "clip",
-          clipId: "mat-salon-harmony",
-          label: "Navy velvet suite"
-        },
-        {
-          x: 72,
-          y: 74,
-          type: "clip",
-          clipId: "mat-salon-sofas",
-          label: "Sofa fabric"
-        },
-        {
-          x: 49,
-          y: 77,
-          type: "clip",
-          clipId: "mat-salon-table",
-          label: "Coffee table"
-        },
-        {
-          x: 18,
-          y: 42,
-          type: "nav",
-          target: "deck",
-          label: "Aft deck"
-        },
-        {
-          x: 82,
-          y: 36,
-          type: "nav",
-          target: "exterior",
-          label: "Exterior"
-        }
-      ]
+      pano: "aerial"
     }
   },
 

@@ -8,7 +8,6 @@
 const videoA = document.getElementById("main-video");
 const videoB = document.getElementById("ab-video-b");
 const seqCanvas = document.getElementById("seq-canvas");
-const poiLayer = document.getElementById("poi-layer");
 const trackEl = document.getElementById("track");
 const loaderEl = document.getElementById("loader");
 const ctx = seqCanvas.getContext("2d", { alpha: false });
@@ -22,10 +21,8 @@ let currentClipSrc = "";
 let forceLoopMode = false;
 let globalSpeedMultiplier = 2.0; // Default 2.0x so 10s AI clips feel snappy (~5s)
 let currentBaseIsLoop = true;
-let poisVisible = true;
 let busy = false;
 let navGen = 0;
-let poiTimer = null;
 const videoBlobs = new Map();
 
 function preloadMp4Blob(rawSrc) {
@@ -227,8 +224,7 @@ async function playMp4Clip(options) {
     followUpSrc = null,
     followUpCode = "",
     followUpName = "",
-    targetScene = null,
-    showPoisAfter = true
+    targetScene = null
   } = options;
 
   if (!src) return;
@@ -289,12 +285,6 @@ async function playMp4Clip(options) {
     preloadNeighborsAndScene(targetScene);
   }
 
-  updateTelemetryHud({
-    code: currentClipCode,
-    name: currentClipName,
-    isLoop: shouldLoop,
-    isTransition: !shouldLoop
-  });
   highlightActiveCatalogButtons(currentClipCode);
 
   // 2. Instant, zero-fade swap: standby is already playing and decoded on GPU.
@@ -306,10 +296,6 @@ async function playMp4Clip(options) {
 
   activeSlot = activeSlot === "A" ? "B" : "A";
   busy = false;
-
-  if (showPoisAfter && targetScene) {
-    renderPOIs(CONFIG_V2.scenes[targetScene]?.pois || []);
-  }
 
   // Preload followUpSrc immediately so when this transition ends, the followUp is in RAM
   if (followUpSrc) {
@@ -329,15 +315,7 @@ async function playMp4Clip(options) {
         code: followUpCode || extractCodeFromSrc(followUpSrc),
         name: followUpName || `${name} (Loop)`,
         loop: true,
-        targetScene: targetScene || currentScene,
-        showPoisAfter: true
-      });
-    } else if (holdLastFrame) {
-      updateTelemetryHud({
-        code: currentClipCode,
-        name: `${currentClipName}`,
-        isLoop: false,
-        isTransition: false
+        targetScene: targetScene || currentScene
       });
     }
   };
@@ -354,9 +332,18 @@ function extractCodeFromSrc(src) {
 
 // All clips are H.264 MP4 (plays on every browser, hardware-decoded).
 // Phones get the 720p copies from videos_web_m/.
+// Desktop Chrome/Edge/Firefox get the full-quality master encodes listed here;
+// Safari keeps the MP4 until it has its own variant.
+const DESKTOP_MASTER_CLIPS = {
+  "videos_web/main_idle.mp4": "videos_webm/main_idle.webm"
+};
+const IS_SAFARI = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
 function resolveBestVideoFormat(src) {
   if (!src) return src;
-  return MOBILE ? src.replace("videos_web/", "videos_web_m/") : src;
+  if (MOBILE) return src.replace("videos_web/", "videos_web_m/");
+  if (!IS_SAFARI && DESKTOP_MASTER_CLIPS[src]) return DESKTOP_MASTER_CLIPS[src];
+  return src;
 }
 
 /* ── SCENE NAVIGATION (Bottom Dock & Hotspots) ── */
@@ -369,8 +356,6 @@ async function navigateTo(destSceneId, forceDirect = false) {
     ? CONFIG_V2.transitions?.[fromSceneId]?.[destSceneId]
     : null;
 
-  hidePOIs();
-
   if (trans && trans.src) {
     const followUp = trans.endBehavior === "startSceneLoop" ? destScene.video : null;
     await playMp4Clip({
@@ -382,8 +367,7 @@ async function navigateTo(destSceneId, forceDirect = false) {
       followUpSrc: followUp,
       followUpCode: destScene.videoId,
       followUpName: destScene.title,
-      targetScene: destSceneId,
-      showPoisAfter: true
+      targetScene: destSceneId
     });
   } else {
     await playMp4Clip({
@@ -392,8 +376,7 @@ async function navigateTo(destSceneId, forceDirect = false) {
       name: destScene.title,
       loop: !!destScene.loop,
       holdLastFrame: !!destScene.holdLastFrame,
-      targetScene: destSceneId,
-      showPoisAfter: true
+      targetScene: destSceneId
     });
   }
   track("navigate_v2", { from: fromSceneId, to: destSceneId });
@@ -434,8 +417,7 @@ window.triggerCatalogClip = function triggerCatalogClip(idOrCode) {
     followUpSrc: item.followUpSrc || null,
     followUpCode: item.followUpCode || "",
     followUpName: item.name + " (Loop)",
-    targetScene,
-    showPoisAfter: true
+    targetScene
   });
 
   track("clip_trigger_v2", { id: item.id, code: item.code, name: item.name });
@@ -449,8 +431,7 @@ window.triggerCurrentOrbit = function triggerCurrentOrbit() {
       code: sc.orbitId || extractCodeFromSrc(sc.orbitVideo),
       name: sc.orbitLabel || `${sc.title} Orbit`,
       loop: true,
-      targetScene: currentScene,
-      showPoisAfter: true
+      targetScene: currentScene
     });
   } else {
     window.triggerCatalogClip("orbit-yacht-360");
@@ -473,13 +454,6 @@ window.toggleForceLoop = function toggleForceLoop() {
     btn.classList.toggle("active", forceLoopMode);
     btn.setAttribute("aria-pressed", String(forceLoopMode));
   }
-};
-
-window.togglePoisVisibility = function togglePoisVisibility() {
-  poisVisible = !poisVisible;
-  poiLayer.classList.toggle("pois-hidden", !poisVisible);
-  const btn = document.getElementById("hud-poi-toggle");
-  if (btn) btn.classList.toggle("active", poisVisible);
 };
 
 /* ── CONTEXT-AWARE ON-STAGE QUICK CONFIGURATOR BAR (#context-config-bar) ──
@@ -532,63 +506,6 @@ function renderContextConfigBar(sceneId) {
     <div class="ctx-bar-items">${pillsHtml}</div>
   `;
   highlightActiveCatalogButtons(currentClipCode);
-}
-
-/* ── RENDER INTERACTIVE HOTSPOTS (POIs) ON STAGE ── */
-function renderPOIs(pois = []) {
-  updatePanoBtn(true);
-  clearTimeout(poiTimer);
-  poiLayer.classList.remove("out");
-  poiLayer.innerHTML = "";
-
-  pois.forEach((p, idx) => {
-    const el = document.createElement("div");
-    // Shortcut chip: "go to" places get an arrow, changes (finishes, flights) get a play mark
-    const isNav = p.type === "nav";
-    el.className = "poi poi-shortcut" + (isNav ? " poi--nav" : " poi--change");
-    el.style.left = p.x + "%";
-    el.style.top = p.y + "%";
-    el.style.animationDelay = idx * 70 + "ms";
-
-    const iconSvg = isNav
-      ? '<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5l5-5M4.5 3.5h4v4"/></svg>'
-      : '<svg viewBox="0 0 12 12" fill="currentColor"><path d="M4 2.8v6.4L9.2 6z"/></svg>';
-
-    el.innerHTML = `
-      <button class="poi-chip" type="button">
-        <span class="poi-chip-ic">${iconSvg}</span>
-        <span class="poi-chip-lbl">${p.label.replace(/\s*\(\d+\)$/, "")}</span>
-      </button>
-    `;
-
-    const activate = () => {
-      if (p.type === "nav" && p.target) {
-        navigateTo(p.target);
-      } else if (p.type === "clip" && p.clipId) {
-        window.triggerCatalogClip(p.clipId);
-      } else if (p.type === "drawer") {
-        openExplorerDrawer(p.drawerTab || "materials");
-      }
-    };
-
-    el.addEventListener("click", activate);
-    el.addEventListener("touchstart", e => {
-      e.preventDefault();
-      activate();
-    }, { passive: false });
-
-    poiLayer.appendChild(el);
-  });
-}
-
-function hidePOIs() {
-  updatePanoBtn(false);
-  clearTimeout(poiTimer);
-  poiLayer.classList.add("out");
-  poiTimer = setTimeout(() => {
-    poiLayer.innerHTML = "";
-    poiLayer.classList.remove("out");
-  }, 260);
 }
 
 /* ── BUILD BOTTOM CAMERA DOCK (#track) ── */
@@ -737,7 +654,7 @@ function highlightActiveCatalogButtons(code) {
   }
 }
 
-/* ── GROUPED CONTROLS: DROPDOWN POPOVERS & COLLAPSIBLE HUD ── */
+/* ── GROUPED CONTROLS: DROPDOWN POPOVERS ── */
 function closePopovers(except) {
   document.querySelectorAll(".pop-wrap.open").forEach(wrap => {
     if (wrap === except) return;
@@ -770,13 +687,7 @@ function initPopovers() {
   });
 }
 
-window.toggleHudExpanded = function toggleHudExpanded() {
-  const hud = document.getElementById("telemetry-hud");
-  const btn = document.getElementById("hud-expand");
-  if (!hud) return;
-  const expanded = hud.classList.toggle("expanded");
-  btn?.setAttribute("aria-expanded", String(expanded));
-};
+
 
 /* ── EXPLORER DRAWER & SHIPYARD DOSSIER MODAL ── */
 let explorerOpen = false;
@@ -822,64 +733,6 @@ window.submitDossierLead = function submitDossierLead(e) {
     btn.classList.add("confirmed");
   }
 };
-
-/* ── TELEMETRY & VIDEO PROGRESS HUD ── */
-function updateTelemetryHud({ code, name, isLoop, isTransition }) {
-  const codeEl = document.getElementById("hud-clip-code");
-  const nameEl = document.getElementById("hud-clip-name");
-  const modeEl = document.getElementById("hud-clip-mode");
-  if (codeEl) codeEl.textContent = `#${code}`;
-  if (nameEl) nameEl.textContent = name;
-  if (modeEl) {
-    modeEl.textContent = isLoop ? "Loop" : (isTransition ? "Playing" : "Still");
-    modeEl.className = "hud-mode-badge " + (isLoop ? "is-loop" : "is-once");
-  }
-}
-
-function initHudProgressTicker() {
-  const fillEl = document.getElementById("hud-progress-fill");
-  const timeEl = document.getElementById("hud-timecode");
-  const barEl = document.getElementById("hud-progress-bar");
-
-  if (barEl) {
-    barEl.addEventListener("click", e => {
-      const vid = getActiveVideo();
-      if (!vid || !vid.duration) return;
-      const rect = barEl.getBoundingClientRect();
-      const ratio = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
-      vid.currentTime = ratio * vid.duration;
-      vid.play().catch(() => {});
-    });
-  }
-
-  function tick() {
-    const vid = getActiveVideo();
-    if (vid && vid.duration && isFinite(vid.duration)) {
-      const pct = Math.min(100, (vid.currentTime / vid.duration) * 100);
-      if (fillEl) fillEl.style.width = pct.toFixed(1) + "%";
-      if (timeEl) {
-        timeEl.textContent = `${vid.currentTime.toFixed(1)}s / ${vid.duration.toFixed(1)}s`;
-      }
-    }
-    requestAnimationFrame(tick);
-  }
-  requestAnimationFrame(tick);
-}
-
-/* ── 360° BUTTON ── */
-function updatePanoBtn(visible) {
-  const btn = document.getElementById("pano-btn");
-  if (!btn) return;
-  btn.classList.toggle("show", !!visible);
-}
-
-function initPanoBtn() {
-  const btn = document.getElementById("pano-btn");
-  if (!btn) return;
-  btn.addEventListener("click", () => {
-    if (window.openPanoModal) window.openPanoModal(currentScene);
-  });
-}
 
 /* ── CUSTOM CURSOR ── */
 function initCursor() {
@@ -1315,8 +1168,6 @@ window.addEventListener("load", () => {
   buildTrack();
   buildExplorerMenus();
   initPopovers();
-  initPanoBtn();
-  initHudProgressTicker();
 
   const initialScene = sceneFromHash();
   updateSceneHeader(initialScene);
