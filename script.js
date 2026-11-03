@@ -25,20 +25,51 @@ let globalSpeedMultiplier = 2.0; // Default 2.0x so 10s AI clips feel snappy (~5
 let currentBaseIsLoop = true;
 let busy = false;
 let navGen = 0;
+// Whole clips are fetched into memory and played from object URLs, so switching
+// clips never waits on the network. videoBlobs: src -> object URL (null while loading).
 const videoBlobs = new Map();
+const videoBlobLoads = new Map();
 
-function preloadMp4Blob(rawSrc) {
+async function readBlobWithProgress(response, onProgress) {
+  if (!response.ok) throw new Error(`HTTP ${response.status}`);
+  const total = Number(response.headers.get("content-length")) || 0;
+  if (!onProgress || !total || !response.body) return response.blob();
+  const reader = response.body.getReader();
+  const chunks = [];
+  let received = 0;
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    chunks.push(value);
+    received += value.length;
+    onProgress(Math.min(1, received / total));
+  }
+  return new Blob(chunks, { type: response.headers.get("content-type") || "video/webm" });
+}
+
+function preloadMp4Blob(rawSrc, onProgress) {
   const src = resolveBestVideoFormat(rawSrc);
-  if (!src || videoBlobs.has(src)) return Promise.resolve();
+  if (!src) return Promise.resolve();
+  if (videoBlobs.get(src)) {
+    onProgress?.(1);
+    return Promise.resolve(videoBlobs.get(src));
+  }
+  if (videoBlobLoads.has(src)) return videoBlobLoads.get(src);
   const p = fetch(src)
-    .then(r => r.blob())
+    .then(r => readBlobWithProgress(r, onProgress))
     .then(b => {
       const url = URL.createObjectURL(b);
       videoBlobs.set(src, url);
+      onProgress?.(1);
       return url;
     })
-    .catch(() => {});
+    .catch(() => {
+      videoBlobs.delete(src);
+      onProgress?.(1);
+    })
+    .finally(() => videoBlobLoads.delete(src));
   videoBlobs.set(src, null);
+  videoBlobLoads.set(src, p);
   return p;
 }
 
@@ -75,7 +106,15 @@ function preloadNeighborsAndScene(sceneId) {
   preloadQueue.length = 0;
   const urls = new Set([sc.video]);
   const trans = CONFIG_V2.transitions?.[sceneId] || {};
-  Object.values(trans).forEach(t => t?.src && urls.add(t.src));
+  Object.entries(trans).forEach(([destId, t]) => {
+    if (t?.sequence && CONFIG_V2.sequences?.[t.sequence]) {
+      // Frames are decoded ahead; the destination idle video follows them
+      preloadSequence(t.sequence).catch(() => {});
+      urls.add(CONFIG_V2.scenes[destId]?.video);
+    } else if (t?.src) {
+      urls.add(t.src);
+    }
+  });
   urls.add(sc.orbitVideo);
   if (!MOBILE) {
     if (sceneId === "exterior") {
@@ -216,6 +255,138 @@ function waitFirstPaintedFrame(vid, timeoutMs = 4000) {
   });
 }
 
+/* ── IMAGE-SEQUENCE ENGINE ──
+   Frames are downloaded and decoded before playback, then drawn on #seq-canvas
+   at a fixed rate. Phones use the "_m" folder (half resolution) and every other
+   frame at half the rate, so a transition lasts the same everywhere. */
+const SEQ_CACHE_MAX = MOBILE ? 3 : 5;
+const seqCache = new Map(); // id -> Promise<HTMLImageElement[]>, oldest first
+let lastSeqFrame = null;
+
+function sequenceFrameUrls(def) {
+  const folder = MOBILE ? def.folder.replace(/\/?$/, "_m/") : def.folder;
+  const step = MOBILE ? 2 : 1;
+  const urls = [];
+  for (let n = def.from; n <= def.to; n += step) {
+    urls.push(`${folder}${def.prefix}${String(n).padStart(def.pad || 2, "0")}.${def.ext || "jpg"}`);
+  }
+  return urls;
+}
+
+function rememberSequence(id, promise) {
+  seqCache.delete(id);
+  seqCache.set(id, promise);
+  while (seqCache.size > SEQ_CACHE_MAX) seqCache.delete(seqCache.keys().next().value);
+}
+
+function preloadSequence(id, onProgress) {
+  if (seqCache.has(id)) {
+    const cached = seqCache.get(id);
+    rememberSequence(id, cached); // refresh its place in the cache
+    if (onProgress) cached.then(() => onProgress(1), () => onProgress(1));
+    return cached;
+  }
+  const def = CONFIG_V2.sequences?.[id];
+  if (!def) return Promise.reject(new Error(`Unknown sequence: ${id}`));
+  const urls = sequenceFrameUrls(def);
+  const frames = new Array(urls.length);
+  const parallel = MOBILE ? 4 : urls.length;
+  let next = 0;
+  let loaded = 0;
+
+  const promise = new Promise((resolve, reject) => {
+    let failed = false;
+    const loadNext = () => {
+      if (failed || next >= urls.length) return;
+      const i = next++;
+      const img = new Image();
+      img.onload = () => {
+        // decode() off the main thread so the first draw never stutters
+        (img.decode ? img.decode().catch(() => {}) : Promise.resolve()).then(() => {
+          frames[i] = img;
+          loaded++;
+          onProgress?.(loaded / urls.length);
+          if (loaded === urls.length) resolve(frames);
+          else loadNext();
+        });
+      };
+      img.onerror = () => {
+        if (failed) return;
+        failed = true;
+        seqCache.delete(id);
+        reject(new Error(`Failed to load ${img.src}`));
+      };
+      img.src = urls[i];
+    };
+    for (let k = 0; k < Math.min(parallel, urls.length); k++) loadNext();
+  });
+  rememberSequence(id, promise);
+  return promise;
+}
+
+function drawCover(img) {
+  const { w, h } = viewportSize();
+  const scale = Math.max(w / img.naturalWidth, h / img.naturalHeight);
+  const dw = Math.round(img.naturalWidth * scale);
+  const dh = Math.round(img.naturalHeight * scale);
+  ctx.drawImage(img, Math.round((w - dw) / 2), Math.round((h - dh) / 2), dw, dh);
+  lastSeqFrame = img;
+}
+
+function playSequence(frames, reverse, gen, fps) {
+  return new Promise(resolve => {
+    seqCanvas.classList.remove("fading");
+    seqCanvas.classList.add("active");
+    const frameMs = 1000 / fps;
+    let i = reverse ? frames.length - 1 : 0;
+    let last = 0;
+    const step = now => {
+      if (gen !== navGen) return resolve(false);
+      if (now - last >= frameMs) {
+        last = now;
+        if (frames[i]) drawCover(frames[i]);
+        i += reverse ? -1 : 1;
+        if (reverse ? i < 0 : i >= frames.length) return resolve(true);
+      }
+      requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  });
+}
+
+// The loader only appears when a wait is long enough to notice (> 400 ms)
+function withLoader(promise) {
+  const timer = setTimeout(() => loaderEl?.classList.add("visible"), 400);
+  return promise.finally(() => {
+    clearTimeout(timer);
+    loaderEl?.classList.remove("visible");
+  });
+}
+
+// Fade the held frame away once the video underneath is already moving
+function fadeOutCanvas() {
+  seqCanvas.classList.add("fading");
+  setTimeout(() => {
+    if (!seqCanvas.classList.contains("fading")) return;
+    seqCanvas.classList.remove("active", "fading");
+    lastSeqFrame = null;
+  }, 300);
+}
+
+function showPoster(src) {
+  return new Promise(resolve => {
+    const img = new Image();
+    img.onload = () => {
+      seqCanvas.classList.remove("fading");
+      seqCanvas.classList.add("active");
+      drawCover(img);
+      resolve(true);
+    };
+    img.onerror = () => resolve(false);
+    img.src = src;
+  });
+}
+
 async function playMp4Clip(options) {
   const {
     src,
@@ -226,7 +397,9 @@ async function playMp4Clip(options) {
     followUpSrc = null,
     followUpCode = "",
     followUpName = "",
-    targetScene = null
+    targetScene = null,
+    holdCanvas = false, // keep what #seq-canvas shows (poster, last sequence frame)
+    fadeCanvas = false // fade the canvas out instead of an instant cut
   } = options;
 
   if (!src) return;
@@ -239,8 +412,12 @@ async function playMp4Clip(options) {
 
   // 1. Lock the current video's exact frame onto #seq-canvas so the screen
   //    NEVER dips to black or flashes while the next video loads and decodes!
-  if (drawVideoToCanvas(current)) {
+  if (holdCanvas && seqCanvas.classList.contains("active")) {
+    seqCanvas.classList.remove("fading");
+  } else if (drawVideoToCanvas(current)) {
+    seqCanvas.classList.remove("fading");
     seqCanvas.classList.add("active");
+    lastSeqFrame = null;
   }
 
   const resolvedSrc = videoBlobs.get(actualSrc) || actualSrc;
@@ -293,7 +470,11 @@ async function playMp4Clip(options) {
   // 2. Instant, zero-fade swap: standby is already playing and decoded on GPU.
   standby.classList.add("vid-active");
   current.classList.remove("vid-active");
-  seqCanvas.classList.remove("active");
+  if (fadeCanvas) fadeOutCanvas();
+  else {
+    seqCanvas.classList.remove("active", "fading");
+    lastSeqFrame = null;
+  }
   current.pause();
   current.removeAttribute("poster");
 
@@ -349,6 +530,16 @@ async function navigateTo(destSceneId, forceDirect = false) {
     ? CONFIG_V2.transitions?.[fromSceneId]?.[destSceneId]
     : null;
 
+  if (trans?.sequence && CONFIG_V2.sequences?.[trans.sequence]) {
+    const played = await playSequenceTransition(trans, destSceneId);
+    if (played) {
+      track("navigate_v2", { from: fromSceneId, to: destSceneId, via: "sequence" });
+      return;
+    }
+    if (played === null) return; // superseded by a newer click
+    // frames failed to load: fall through to the video transition or a direct cut
+  }
+
   if (trans && trans.src) {
     const followUp = trans.endBehavior === "startSceneLoop" ? destScene.video : null;
     await playMp4Clip({
@@ -373,6 +564,42 @@ async function navigateTo(destSceneId, forceDirect = false) {
     });
   }
   track("navigate_v2", { from: fromSceneId, to: destSceneId });
+}
+
+// Frames on the canvas, then the destination idle video starts underneath the
+// held last frame (which matches its frame 0) and the canvas fades away.
+// Returns true when played, false when the frames failed, null when superseded.
+async function playSequenceTransition(trans, destSceneId) {
+  const gen = ++navGen;
+  const def = CONFIG_V2.sequences[trans.sequence];
+  const destScene = CONFIG_V2.scenes[destSceneId];
+  let frames;
+  try {
+    frames = await withLoader(preloadSequence(trans.sequence));
+  } catch (err) {
+    console.error("Sequence error:", err);
+    return gen === navGen ? false : null;
+  }
+  if (gen !== navGen) return null;
+
+  // Warm the destination video while the frames play
+  preloadMp4Blob(destScene.video);
+  const fps = (def.fps || 30) / (MOBILE ? 2 : 1);
+  const finished = await playSequence(frames, !!def.reverse, gen, fps);
+  if (!finished || gen !== navGen) return null;
+  getActiveVideo().pause();
+
+  await playMp4Clip({
+    src: destScene.video,
+    code: destScene.videoId,
+    name: destScene.title,
+    loop: !!destScene.loop,
+    holdLastFrame: !!destScene.holdLastFrame,
+    targetScene: destSceneId,
+    holdCanvas: true,
+    fadeCanvas: true
+  });
+  return true;
 }
 
 /* ── TRIGGER ANY OF THE 29 CLIPS BY CATALOG ID OR CODE ── */
@@ -1124,17 +1351,92 @@ function galleryDownload(i) {
   a.click();
 }
 
+/* ── PRELOADER ──
+   Holds the experience until the first view can play without stalling: the
+   poster, the opening idle video and the frame sequences that leave that view.
+   Everything else loads afterwards, while the visitor is already watching. */
+function posterSrc() {
+  return (MOBILE && CONFIG_V2.posterMobile) || CONFIG_V2.poster;
+}
+
+function initExperience() {
+  const initialScene = sceneFromHash();
+  updateSceneHeader(initialScene);
+  setActiveTimeline(initialScene);
+  renderContextConfigBar(initialScene);
+
+  const el = document.getElementById("preloader");
+  const pctEl = document.getElementById("preloader-pct");
+  const barEl = document.getElementById("preloader-bar");
+  const sc = CONFIG_V2.scenes[initialScene];
+  const usePoster = initialScene === CONFIG_V2.defaultScene && !!CONFIG_V2.poster;
+
+  // Each task reports 0..1; the bar shows their weighted average
+  const tasks = [];
+  const render = () => {
+    const total = tasks.reduce((s, t) => s + t.weight, 0) || 1;
+    const pct = Math.round((tasks.reduce((s, t) => s + t.weight * t.progress, 0) / total) * 100);
+    if (pctEl) pctEl.textContent = pct + "%";
+    if (barEl) barEl.style.transform = `scaleX(${pct / 100})`;
+  };
+  const runTask = (weight, start) => {
+    const task = { weight, progress: 0 };
+    tasks.push(task);
+    const report = p => {
+      task.progress = Math.max(task.progress, p);
+      render();
+    };
+    return Promise.resolve(start(report)).catch(() => {}).finally(() => report(1));
+  };
+
+  const jobs = [];
+  if (usePoster) {
+    jobs.push(runTask(1, () => new Promise(res => {
+      const img = new Image();
+      img.onload = img.onerror = res;
+      img.src = posterSrc();
+    })));
+  }
+  jobs.push(runTask(8, report => preloadMp4Blob(sc.video, report)));
+  Object.values(CONFIG_V2.transitions?.[initialScene] || {}).forEach(t => {
+    if (t?.sequence && CONFIG_V2.sequences?.[t.sequence]) {
+      jobs.push(runTask(2, report => preloadSequence(t.sequence, report)));
+    }
+  });
+  render();
+
+  Promise.allSettled(jobs).then(async () => {
+    if (pctEl) pctEl.textContent = "100%";
+    if (barEl) barEl.style.transform = "scaleX(1)";
+    const posterShown = usePoster ? await showPoster(posterSrc()) : false;
+    el?.classList.add("hide");
+    setTimeout(() => el?.remove(), 700);
+
+    await playMp4Clip({
+      src: sc.video,
+      code: sc.videoId,
+      name: sc.title,
+      loop: !!sc.loop,
+      holdLastFrame: !!sc.holdLastFrame,
+      targetScene: initialScene,
+      holdCanvas: posterShown,
+      fadeCanvas: posterShown
+    });
+  });
+}
+
 /* ── INITIALIZATION ── */
-window.addEventListener("resize", resizeCanvas);
+function onViewportResize() {
+  resizeCanvas();
+  // Resizing clears the canvas: repaint the frame it was holding
+  if (lastSeqFrame && seqCanvas.classList.contains("active")) drawCover(lastSeqFrame);
+}
+window.addEventListener("resize", onViewportResize);
+window.visualViewport?.addEventListener("resize", onViewportResize);
 window.addEventListener("load", () => {
   resizeCanvas();
   buildTrack();
   buildExplorerMenus();
   initPopovers();
-
-  const initialScene = sceneFromHash();
-  updateSceneHeader(initialScene);
-  setActiveTimeline(initialScene);
-  renderContextConfigBar(initialScene);
-  navigateTo(initialScene, true);
+  initExperience();
 });

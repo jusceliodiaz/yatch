@@ -8,7 +8,9 @@ const CONFIG_V2 = {
   yachtName: "MAGNIFIC 68'",
   yachtSub: "Bespoke Mediterranean Flybridge Explorer",
   defaultScene: "exterior",
-  poster: "images/poster_yacht_v2.jpg?v=1",
+  // Frame 0 of the default scene's idle video: shown while it starts, so the first paint already matches it.
+  poster: "images/poster_main_idle.jpg?v=1",
+  posterMobile: "images/poster_main_idle_m.jpg?v=1",
 
   /* ── 1. MAIN CAMERA VIEWPOINTS (Bottom Dock Timeline) ── */
   timeline: [
@@ -115,7 +117,27 @@ const CONFIG_V2 = {
     }
   },
 
-  /* ── 3. AUTOMATIC SCENE-TO-SCENE CAMERA TRANSITION MATRIX ── */
+  /* ── 3. IMAGE-SEQUENCE TRANSITIONS ──
+     Pre-rendered frames drawn on #seq-canvas between two views.
+       folder   desktop frames; phones read the same names from folder + "_m"
+                (e.g. images/seq/ -> images/seq_m/), half resolution
+       prefix   file name before the frame number: <prefix><NN>.<ext>
+       from/to  first and last frame number (inclusive); pad = digits in NN
+       fps      desktop playback rate; phones load every other frame at half the
+                rate, so the duration is the same
+       reverse  play the frames backwards (reuse one render for the way back)
+     Rule: the first frame must match what is on screen in the source view and
+     the last frame must match frame 0 of the destination view's idle video.
+     Example:
+       "exterior-to-deck": { folder: "images/seq/", prefix: "exterior_to_deck_", from: 0, to: 72, pad: 2, ext: "jpg", fps: 60 },
+       "deck-to-exterior": { folder: "images/seq/", prefix: "exterior_to_deck_", from: 0, to: 72, pad: 2, ext: "jpg", fps: 60, reverse: true } */
+  sequences: {},
+
+  /* ── 4. SCENE-TO-SCENE TRANSITION MATRIX ──
+     transitions[from][to] is either
+       { sequence: "<id in sequences>" }               -> frames, then the destination idle video
+       { src: "<video>", endBehavior: "startSceneLoop" | "holdEndFrame" }
+     An entry may carry both: the video is the fallback if the frames fail to load. */
   transitions: {
     exterior: {
       horizon: {
@@ -229,7 +251,7 @@ const CONFIG_V2 = {
     }
   },
 
-  /* ── 4. CATALOG BY CATEGORY ── */
+  /* ── 5. CATALOG BY CATEGORY ── */
   catalog: {
     /* A) LIGHTING & MOOD */
     moods: [

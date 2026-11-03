@@ -12,21 +12,29 @@
       content="Interactive Superyacht Digital Showroom & Bespoke Configurator V2 — explore 5 camera viewpoints, 11 cinematic flights, hull paint finishes, marine teak decking, Italian salon interiors, and real-time weather/lighting moods."
     />
     <link rel="icon" type="image/png" href="images/fav-icon.png" />
-    <link rel="preload" href="images/poster_yacht_v2.jpg?v=1" as="image" />
+    <link rel="preload" href="images/poster_main_idle.jpg?v=1" as="image" media="(hover: hover) and (min-width: 768px)" />
+    <link rel="preload" href="images/poster_main_idle_m.jpg?v=1" as="image" media="(hover: none), (max-width: 767px)" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400..700&display=swap"
     />
-    <link rel="stylesheet" href="styles.css?v=1" />
+    <link rel="stylesheet" href="styles.css?v=2" />
   </head>
   <body>
+    <!-- ══ PRELOADER: holds until the opening view can play without stalling ══ -->
+    <div id="preloader" role="status" aria-live="polite">
+      <div class="preloader-brand">MAGNIFIC <span>68'</span></div>
+      <div class="preloader-meter"><div id="preloader-bar"></div></div>
+      <div class="preloader-status"><span>Loading</span><strong id="preloader-pct">0%</strong></div>
+    </div>
+
     <div id="noise"></div>
 
     <!-- ══ MAIN DOUBLE-BUFFERED MP4 STAGE ══ -->
     <div id="stage">
-      <video id="main-video" class="vid-active" muted loop playsinline preload="auto" poster="images/poster_yacht_v2.jpg?v=1"></video>
+      <video id="main-video" class="vid-active" muted loop playsinline preload="auto"></video>
       <video id="ab-video-b" muted loop playsinline preload="auto"></video>
       <canvas id="seq-canvas"></canvas>
     </div>
@@ -610,8 +618,8 @@
       }
     </script>
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
-    <script src="scenes.js?v=1"></script>
-    <script src="script.js?v=1"></script>
+    <script src="scenes.js?v=2"></script>
+    <script src="script.js?v=2"></script>
     <script src="shop.js?v=1"></script>
     <script type="module" src="shop3d.js?v=1"></script>
     <script type="module" src="pano360.js?v=1"></script>

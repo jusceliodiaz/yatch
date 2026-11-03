@@ -18,10 +18,10 @@ The visitor-facing interface is in English (`<html lang="en">`). Keep labels sho
 ## Files
 
 ```text
-index.html     Page structure: top bar, bottom dock, Customize drawer, Request info modal, shop, AI Studio, gallery
+index.html     Page structure: preloader, top bar, bottom dock, Customize drawer, Request info modal, shop, AI Studio, gallery
 styles.css     All styles. The last sections ("GROUPED CONTROLS", "COMPOSE LOOK") define the current look and override older rules
-scenes.js      CONFIG_V2: views (timeline), scene videos, scene-to-scene transitions, and the clip catalog
-script.js      Video player, navigation, bottom dock, Customize drawer, dropdowns, AI Studio and gallery
+scenes.js      CONFIG_V2: poster, views (timeline), scene videos, frame sequences, transitions, and the clip catalog
+script.js      Preloader, video player, image-sequence player, navigation, dock, Customize drawer, dropdowns, AI Studio, gallery
 shop.js        Furniture shop catalog, cart and AI product placement (inherited IKEA content, see SHOP-README.md)
 shop3d.js      Three.js product viewer
 pano360.js     360° panorama viewer (no button on the page at the moment)
@@ -38,6 +38,23 @@ images/        Poster, favicon, panorama images and inherited prototype media
 - Playback is double-buffered: two `<video>` elements swap so there is never a black frame; the outgoing frame is held on `#seq-canvas` while the next clip starts.
 - Stage videos are always muted (also forced in `script.js`) and use `playsinline`.
 - Background preloads go through a small queue (`queuePreload`): the current view's transitions first; finishes and lighting clips only on desktop.
+
+## Startup
+
+1. `#preloader` shows a percentage while it loads the poster (`CONFIG_V2.poster`, frame 0 of `main_idle.webm`; `posterMobile` on phones), the opening idle video into memory (with real download progress), and any frame sequences that leave the opening view.
+2. The poster is drawn on `#seq-canvas`, the preloader fades, the idle video starts underneath and the canvas fades out once the video is moving.
+3. Everything else loads in the background queue while the visitor watches.
+
+If the opening idle video changes, re-extract both posters from its frame 0.
+
+## Image-sequence transitions
+
+- Defined in `CONFIG_V2.sequences` (see the comment there) and used from `transitions[from][to] = { sequence: "<id>" }`. An entry can also keep a `src` video as a fallback if the frames fail to load.
+- Desktop frames live in `folder`; phones read the same file names from `folder` + `_m` at half resolution and load every other frame at half the fps, so the duration matches.
+- Frames are downloaded and decoded (`img.decode()`) before playback; up to 5 sequences (3 on phones) stay in memory. Entering a view preloads the sequences that leave it and their destination idle videos.
+- Playback draws on the canvas with `requestAnimationFrame`; afterwards the destination idle video starts under the held last frame and the canvas fades out (300 ms).
+- Frame rule: the first frame must match the source view (idles have a static camera, so any loop frame works) and the last frame must equal frame 0 of the destination idle video. One render can serve both directions with `reverse: true`.
+- Destination views should have a looping idle video (`loop: true`) for the hand-off to be seamless.
 
 ## Configuration (`scenes.js`)
 
