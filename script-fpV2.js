@@ -345,7 +345,11 @@ async function playMp4Clip(options) {
 
 function extractCodeFromSrc(src) {
   const m = String(src).match(/_(\d{5})\.(webm|mp4|mov)/i);
-  return m ? m[1] : "WEBM";
+  if (m) return m[1];
+  // Renamed clips (e.g. main_idle.mp4) carry no code in the filename: look it up in the catalog
+  const cat = CONFIG_V2.catalog;
+  const all = [...cat.moods, ...cat.materials.hull, ...cat.materials.deck, ...cat.materials.salon, ...cat.orbits, ...cat.cameraTransitions];
+  return all.find(item => item.src === src)?.code || "";
 }
 
 // All clips are H.264 MP4 (plays on every browser, hardware-decoded).

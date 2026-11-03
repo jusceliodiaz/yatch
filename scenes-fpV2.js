@@ -99,7 +99,7 @@ const CONFIG_V2 = {
     exterior: {
       title: "Exterior",
       subtitle: "Three-quarter stern view",
-      video: "videos_web/magnific_loopable-video-static-camera_wan_1080p_16-9_30fps_97757.mp4",
+      video: "videos_web/main_idle.mp4",
       loop: true,
       videoId: "97757",
       orbitVideo: "videos_web/magnific_360-em-volta-do-yach-mesma-atura-de-camera_seedance_1080p_16-9_24fps_97756.mp4",
@@ -308,7 +308,7 @@ const CONFIG_V2 = {
       },
       exterior: {
         clipId: "cam-exterior-static",
-        src: "videos_web/magnific_loopable-video-static-camera_wan_1080p_16-9_30fps_97757.mp4",
+        src: "videos_web/main_idle.mp4",
         endBehavior: "startSceneLoop"
       },
       deck: {
@@ -340,7 +340,7 @@ const CONFIG_V2 = {
       },
       exterior: {
         clipId: "cam-exterior-static",
-        src: "videos_web/magnific_loopable-video-static-camera_wan_1080p_16-9_30fps_97757.mp4",
+        src: "videos_web/main_idle.mp4",
         endBehavior: "startSceneLoop"
       }
     },
@@ -352,7 +352,7 @@ const CONFIG_V2 = {
       },
       exterior: {
         clipId: "cam-exterior-static",
-        src: "videos_web/magnific_loopable-video-static-camera_wan_1080p_16-9_30fps_97757.mp4",
+        src: "videos_web/main_idle.mp4",
         endBehavior: "startSceneLoop"
       },
       deck: {
@@ -369,7 +369,7 @@ const CONFIG_V2 = {
     salon: {
       exterior: {
         clipId: "cam-exterior-static",
-        src: "videos_web/magnific_loopable-video-static-camera_wan_1080p_16-9_30fps_97757.mp4",
+        src: "videos_web/main_idle.mp4",
         endBehavior: "startSceneLoop"
       },
       deck: {
@@ -400,7 +400,7 @@ const CONFIG_V2 = {
         name: "Midday sun",
         sub: "Clear sky, turquoise water",
         scene: "exterior",
-        src: "videos_web/magnific_loopable-video-static-camera_wan_1080p_16-9_30fps_97757.mp4",
+        src: "videos_web/main_idle.mp4",
         loop: true,
         badge: "Loop",
         swatch: "linear-gradient(135deg, #38bdf8 0%, #0284c7 50%, #facc15 100%)"
@@ -477,7 +477,7 @@ const CONFIG_V2 = {
           category: "Hull",
           desc: "Standard satin-metallic finish",
           scene: "exterior",
-          src: "videos_web/magnific_loopable-video-static-camera_wan_1080p_16-9_30fps_97757.mp4",
+          src: "videos_web/main_idle.mp4",
           loop: true,
           swatch: "linear-gradient(135deg, #94a3b8 0%, #475569 100%)"
         },
@@ -629,7 +629,7 @@ const CONFIG_V2 = {
         name: "Exterior still",
         sub: "Fixed three-quarter stern view",
         scene: "exterior",
-        src: "videos_web/magnific_loopable-video-static-camera_wan_1080p_16-9_30fps_97757.mp4",
+        src: "videos_web/main_idle.mp4",
         loop: true,
         badge: "STATIC LOOP"
       }
