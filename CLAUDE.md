@@ -84,7 +84,7 @@ The controls are wired by `abSetNight()` in `script-fp.js`. During a transition,
 ## Media and performance
 
 - The live page (`index.html`) loads the V2 files (`scenes-fpV2.js`, `script-fpV2.js`, `stylesV2.css`, `shopV2.js`, `pano360V2.js`).
-- V2 clips are H.264 MP4 with `+faststart`: 1080p in `videos_web/` (referenced in `scenes-fpV2.js`) and 720p copies with the same filenames in `videos_web_m/`, picked automatically on phones by `resolveBestVideoFormat()`. Encode both from the masters in `videos/` (git-ignored, like `videos_v2/` and `videos_webm/`).
+- V2 clips are full-quality VP9 WebM in `videos_webm/`, one file per master in `videos/` with the same base name (`main_idle.webm` is the opening clip and the Exterior view). The same files are served on every device for now; `resolveBestVideoFormat()` in `script-fpV2.js` is the hook for future Safari / mobile variants. `videos/` and `videos_v2/` are git-ignored masters.
 
 - Keep desktop transition frames in `images/seq_arch/` and mobile versions in `images/seq_arch_m/`.
 - The existing naming pattern is `<prefix>_NN.jpg`; frame ranges and prefixes are configuration values, not fixed player assumptions.

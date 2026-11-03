@@ -16,38 +16,12 @@ html, body {
   overflow: hidden;
   background: #0d0d0b;
   font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  cursor: none;
+  cursor: default;
   user-select: none; -webkit-user-select: none;
 }
 
-/* ── Cursor ── */
-#cursor {
-  position: fixed;
-  width: 8px; height: 8px;
-  background: var(--warm);
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 9999;
-  transform: translate(-50%, -50%);
-  transition: width 220ms var(--ease), height 220ms var(--ease), background 0.3s;
-}
-#cursor.on {
-  width: 34px; height: 34px;
-  background: transparent;
-  border: 1px solid var(--warm);
-}
-#ring {
-  position: fixed;
-  width: 26px; height: 26px;
-  border: 1px solid rgba(200, 169, 110, 0.3);
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 9998;
-  transform: translate(-50%, -50%);
-}
 @media (hover: none) {
   html, body { cursor: auto; }
-  #cursor, #ring { display: none !important; }
 }
 
 /* ── Grain ── */
@@ -147,7 +121,7 @@ html, body {
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.6);
   display: flex; align-items: center; justify-content: center;
-  cursor: none;
+  cursor: pointer;
   box-shadow: 0 2px 14px rgba(0,0,0,0.22);
   transition: background var(--trans), transform var(--trans);
   flex-shrink: 0;
@@ -252,7 +226,7 @@ html, body {
   font-size: 13px;
   font-weight: 600;
   letter-spacing: 0.06em;
-  cursor: none;
+  cursor: pointer;
   transition: background 0.2s, border-color 0.2s;
 }
 #pano-btn.show { display: inline-flex; }
@@ -287,7 +261,7 @@ html, body {
   justify-content: center;
   background: transparent;
   color: #fff;
-  cursor: none;
+  cursor: pointer;
   transition: background 0.25s var(--ease), color 0.25s var(--ease);
 }
 .dn-btn svg { width: 18px; height: 18px; pointer-events: none; }
@@ -318,7 +292,7 @@ html, body {
   border-radius: 14px;
   border: 1px solid rgba(0,0,0,.08);
   background: rgba(255,255,255,.22);
-  cursor: none;
+  cursor: pointer;
   color: rgba(20,20,20,.6);
   user-select: none;
   touch-action: manipulation;
@@ -558,7 +532,7 @@ html, body {
   color: #fff;
   font-family: inherit;
   text-align: left;
-  cursor: none;
+  cursor: pointer;
   transition: background 0.2s;
 }
 .side-menu-item svg { width: 22px; height: 22px; flex-shrink: 0; }
@@ -656,7 +630,7 @@ html, body {
   background: rgba(20, 19, 15, 0.06);
   border: 1px solid rgba(20, 19, 15, 0.14);
   display: flex; align-items: center; justify-content: center;
-  cursor: none;
+  cursor: pointer;
   transition: background 0.2s;
   flex-shrink: 0;
 }
@@ -684,7 +658,7 @@ html, body {
   aspect-ratio: 4 / 3;
   object-fit: cover;
   display: block;
-  cursor: none;
+  cursor: pointer;
 }
 .gallery-item-play {
   position: absolute;
@@ -724,7 +698,7 @@ html, body {
   background: var(--warm);
   color: #14130f;
   display: flex; align-items: center; justify-content: center;
-  cursor: none;
+  cursor: pointer;
   transition: transform 0.15s, background 0.2s;
 }
 .gallery-dl-btn:hover { transform: scale(1.08); background: #8ed08e; }
@@ -760,7 +734,7 @@ html, body {
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   color: #fff;
-  cursor: none;
+  cursor: pointer;
   transition: background 0.2s, border-color 0.2s;
 }
 #shop-btn:hover {
@@ -823,7 +797,7 @@ html, body {
   background: rgba(20, 19, 15, 0.06);
   border: 1px solid rgba(20, 19, 15, 0.14);
   display: flex; align-items: center; justify-content: center;
-  cursor: none;
+  cursor: pointer;
   transition: background 0.2s;
 }
 #ai-panel-close:hover { background: rgba(20, 19, 15, 0.14); }
@@ -844,7 +818,7 @@ html, body {
   font-family: 'DM Sans', sans-serif;
   font-size: 11px;
   font-weight: 600;
-  cursor: none;
+  cursor: pointer;
   transition: background 0.2s, color 0.2s;
   white-space: nowrap;
 }
@@ -910,7 +884,7 @@ html, body {
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  cursor: none;
+  cursor: pointer;
   transition: background 0.2s, transform 0.2s;
 }
 .ai-generate-btn:hover { background: #333; transform: scale(1.02); }
@@ -960,7 +934,7 @@ html, body {
 #ai-result-img, #ai-result-video {
   width: 100%; height: 100%; object-fit: cover; display: block;
 }
-#ai-result-img { cursor: none; }
+#ai-result-img { cursor: pointer; }
 #ai-img-zoom-hint {
   position: absolute;
   bottom: 7px; left: 7px;
@@ -996,7 +970,7 @@ html, body {
   background: #fff;
   border: 1px solid rgba(0,0,0,0.15);
   display: flex; align-items: center; justify-content: center;
-  cursor: none;
+  cursor: pointer;
   transition: background 0.2s;
 }
 #ai-lightbox-close:hover { background: #f0f0f0; }
@@ -1011,7 +985,7 @@ html, body {
   background: #fff;
   border: 1px solid rgba(0,0,0,0.15);
   display: flex; align-items: center; justify-content: center;
-  cursor: none;
+  cursor: pointer;
   transition: background 0.2s;
   z-index: 2;
 }
@@ -1039,7 +1013,7 @@ html, body {
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.06em;
-  cursor: none;
+  cursor: pointer;
   transition: background 0.2s;
   white-space: nowrap;
 }
@@ -1076,7 +1050,7 @@ html, body {
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.08em;
-  cursor: none;
+  cursor: pointer;
   display: none;
   transition: background 0.2s;
   text-transform: uppercase;
@@ -1138,7 +1112,7 @@ html, body {
   background: rgba(20, 19, 15, 0.72);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  cursor: none;
+  cursor: pointer;
   transition: background 0.2s, border-color 0.2s;
   font-family: 'DM Sans', sans-serif;
 }
@@ -1204,7 +1178,7 @@ html, body {
   background: rgba(20, 19, 15, 0.06);
   border: 1px solid rgba(20, 19, 15, 0.14);
   display: flex; align-items: center; justify-content: center;
-  cursor: none;
+  cursor: pointer;
   transition: background 0.2s;
   flex-shrink: 0;
 }
@@ -1227,7 +1201,7 @@ html, body {
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  cursor: none;
+  cursor: pointer;
   transition: background 0.2s, color 0.2s;
 }
 .shop-tab-btn:hover { background: rgba(20, 19, 15, 0.08); }
@@ -1294,7 +1268,7 @@ html, body {
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.08em;
-  cursor: none;
+  cursor: pointer;
   transition: background 0.2s, transform 0.2s;
 }
 .shop-3d-btn:hover { background: var(--warm); color: #14130f; transform: scale(1.05); }
@@ -1357,7 +1331,7 @@ html, body {
   font-weight: 700;
   letter-spacing: 0.08em;
   text-decoration: none;
-  cursor: none;
+  cursor: pointer;
   transition: background 0.2s, color 0.2s;
 }
 .shop-buy-link:hover { background: rgba(20, 19, 15, 0.1); color: #14130f; }
@@ -1375,7 +1349,7 @@ html, body {
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  cursor: none;
+  cursor: pointer;
   transition: background 0.2s, transform 0.2s;
   white-space: nowrap;
 }
@@ -1414,7 +1388,7 @@ html, body {
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  cursor: none;
+  cursor: pointer;
   transition: transform 0.2s, opacity 0.2s;
 }
 #shop-order-btn:hover { transform: scale(1.04); }
@@ -1447,7 +1421,7 @@ html, body {
   background: rgba(255, 255, 255, 0.9);
   border: none;
   display: flex; align-items: center; justify-content: center;
-  cursor: none;
+  cursor: pointer;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
   transition: background 0.2s;
 }
@@ -1598,7 +1572,7 @@ html, body {
   background: rgba(20, 19, 15, 0.06);
   border: 1px solid rgba(20, 19, 15, 0.14);
   display: flex; align-items: center; justify-content: center;
-  cursor: none;
+  cursor: pointer;
   flex-shrink: 0;
   transition: background 0.2s;
 }
@@ -1662,7 +1636,7 @@ html, body {
   position: relative;
 }
 #shop-ai-result.visible { display: block; }
-#shop-ai-result img { width: 100%; height: 100%; object-fit: cover; display: block; cursor: none; }
+#shop-ai-result img { width: 100%; height: 100%; object-fit: cover; display: block; cursor: pointer; }
 #shop-ai-img-zoom-hint {
   position: absolute;
   bottom: 7px; left: 7px;
@@ -1672,7 +1646,7 @@ html, body {
   border: 1px solid rgba(0,0,0,0.15);
   display: flex; align-items: center; justify-content: center;
   font-size: 12px;
-  cursor: none;
+  cursor: pointer;
 }
 @media (hover: none) { #shop-ai-img-zoom-hint { cursor: pointer; } }
 
@@ -1694,7 +1668,7 @@ html, body {
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  cursor: none;
+  cursor: pointer;
   transition: background 0.2s;
 }
 #shop-keep-btn:hover { background: rgba(20, 19, 15, 0.08); }
@@ -1710,7 +1684,7 @@ html, body {
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  cursor: none;
+  cursor: pointer;
   transition: transform 0.2s, opacity 0.2s, background 0.2s;
 }
 #shop-confirm-btn:hover { transform: scale(1.02); }
@@ -1819,7 +1793,7 @@ html, body {
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.08em;
-  cursor: none;
+  cursor: pointer;
   transition: background 0.2s, transform 0.2s;
 }
 .shop-ai-btn:hover { background: #8ed08e; transform: scale(1.05); }
@@ -1889,7 +1863,7 @@ html, body {
   background: rgba(20, 19, 15, 0.06);
   border: 1px solid rgba(20, 19, 15, 0.14);
   display: flex; align-items: center; justify-content: center;
-  cursor: none;
+  cursor: pointer;
   transition: background 0.2s;
   flex-shrink: 0;
 }
@@ -1991,7 +1965,7 @@ html, body {
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.08em;
-  cursor: none;
+  cursor: pointer;
   transition: background 0.2s, transform 0.2s;
 }
 .shop-ar-btn:hover { background: var(--warm); color: #14130f; transform: scale(1.05); }
@@ -2070,7 +2044,7 @@ html, body {
   background: rgba(20, 19, 15, 0.06);
   border: 1px solid rgba(20, 19, 15, 0.14);
   display: flex; align-items: center; justify-content: center;
-  cursor: none;
+  cursor: pointer;
   transition: background 0.2s;
   flex-shrink: 0;
 }

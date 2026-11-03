@@ -7,6 +7,8 @@
 
 const videoA = document.getElementById("main-video");
 const videoB = document.getElementById("ab-video-b");
+// The stage is always silent, even if a replacement clip carries an audio track
+[videoA, videoB].forEach(v => { v.muted = true; v.defaultMuted = true; v.volume = 0; });
 const seqCanvas = document.getElementById("seq-canvas");
 const trackEl = document.getElementById("track");
 const loaderEl = document.getElementById("loader");
@@ -249,6 +251,7 @@ async function playMp4Clip(options) {
 
   standby.onended = null;
   standby.loop = shouldLoop;
+  standby.muted = true;
   standby.removeAttribute("poster");
 
   if (standby.dataset.rawSrc !== actualSrc) {
@@ -330,19 +333,9 @@ function extractCodeFromSrc(src) {
   return all.find(item => item.src === src)?.code || "";
 }
 
-// All clips are H.264 MP4 (plays on every browser, hardware-decoded).
-// Phones get the 720p copies from videos_web_m/.
-// Desktop Chrome/Edge/Firefox get the full-quality master encodes listed here;
-// Safari keeps the MP4 until it has its own variant.
-const DESKTOP_MASTER_CLIPS = {
-  "videos_web/main_idle.mp4": "videos_webm/main_idle.webm"
-};
-const IS_SAFARI = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-
+// Every clip is the full-quality WebM in videos_webm/, on all devices.
+// Hook for future Safari / mobile variants: return a different path here.
 function resolveBestVideoFormat(src) {
-  if (!src) return src;
-  if (MOBILE) return src.replace("videos_web/", "videos_web_m/");
-  if (!IS_SAFARI && DESKTOP_MASTER_CLIPS[src]) return DESKTOP_MASTER_CLIPS[src];
   return src;
 }
 
@@ -481,24 +474,22 @@ function renderContextConfigBar(sceneId) {
     label = "Hull color";
     pillsHtml = cat.materials.hull.map(swatch).join("");
   } else if (sceneId === "deck") {
-    label = "Aft deck";
+    label = "Deck";
     pillsHtml = cat.materials.deck.map(swatch).join("") +
-      action("97732", "cam-deck-to-salon-a", "Glide to salon") +
-      action("97735", "cam-deck-to-salon-b", "Walk to salon");
+      action("97732", "cam-deck-to-salon-a", "Go to interior");
   } else if (sceneId === "salon") {
-    label = "Salon finishes";
+    label = "Interior finishes";
     pillsHtml = cat.materials.salon.map(swatch).join("");
   } else if (sceneId === "flybridge") {
-    label = "Go to salon";
+    label = "Go to interior";
     pillsHtml =
       action("97733", "cam-flybridge-to-salon-a", "Via side glass") +
-      action("97736", "cam-flybridge-to-salon-b", "Via stern") +
       action("97743", "cam-exterior-to-flybridge", "Replay");
   } else if (sceneId === "horizon") {
     label = "Views";
     pillsHtml =
       action("97740", "cam-horizon-static", "Still") +
-      action("97734", "cam-horizon-to-salon", "Fly into salon");
+      action("97734", "cam-horizon-to-salon", "Fly into interior");
   }
 
   bar.innerHTML = `
@@ -617,8 +608,8 @@ function buildExplorerMenus() {
   if (matContainer) {
     matContainer.innerHTML =
       section("Hull color", `${cat.materials.hull.length} finishes`, swatchGrid(cat.materials.hull)) +
-      section("Aft deck", "Sofas and flooring", swatchGrid(cat.materials.deck)) +
-      section("Salon", "Sofas, fabrics and stone", swatchGrid(cat.materials.salon));
+      section("Deck", "Sofas and flooring", swatchGrid(cat.materials.deck)) +
+      section("Interior", "Sofas, fabrics and stone", swatchGrid(cat.materials.salon));
   }
 
   // 3. Drawer — Camera moves
@@ -733,33 +724,6 @@ window.submitDossierLead = function submitDossierLead(e) {
     btn.classList.add("confirmed");
   }
 };
-
-/* ── CUSTOM CURSOR ── */
-function initCursor() {
-  const cursor = document.getElementById("cursor");
-  const ring = document.getElementById("ring");
-  if (!cursor || !ring || MOBILE) return;
-  let mx = innerWidth / 2, my = innerHeight / 2, rx = mx, ry = my;
-  document.addEventListener("mousemove", e => {
-    mx = e.clientX;
-    my = e.clientY;
-  }, { passive: true });
-
-  function loop() {
-    cursor.style.left = mx + "px";
-    cursor.style.top = my + "px";
-    rx += (mx - rx) * 0.15;
-    ry += (my - ry) * 0.15;
-    ring.style.left = rx + "px";
-    ring.style.top = ry + "px";
-    requestAnimationFrame(loop);
-  }
-  requestAnimationFrame(loop);
-
-  document.addEventListener("mouseover", e => {
-    cursor.classList.toggle("on", !!e.target.closest("button, a, .t-pt, .poi, input, select, textarea"));
-  });
-}
 
 /* ── CAPTURE CURRENT VIDEO FRAME FOR AI STUDIO & BESPOKE SHOP ── */
 async function captureSceneFrame() {
@@ -1164,7 +1128,6 @@ function galleryDownload(i) {
 window.addEventListener("resize", resizeCanvas);
 window.addEventListener("load", () => {
   resizeCanvas();
-  initCursor();
   buildTrack();
   buildExplorerMenus();
   initPopovers();
