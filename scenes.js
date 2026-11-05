@@ -61,7 +61,9 @@ const CONFIG_V2 = {
     }
   ],
 
-  /* ── 2. SCENE DEFINITIONS ── */
+  /* ── 2. SCENE DEFINITIONS ──
+     *_pingpong.webm files are their master played forwards then backwards, so
+     orbits and the Deck idle loop without a jump. */
   scenes: {
     horizon: {
       title: "Aerial",
@@ -69,7 +71,7 @@ const CONFIG_V2 = {
       video: "videos_webm/horizon_idle.webm",
       loop: true,
       videoId: "97740",
-      orbitVideo: "videos_webm/horizon_360.webm",
+      orbitVideo: "videos_webm/horizon_360_pingpong.webm",
       orbitId: "97739",
       orbitLabel: "Orbit the cove"
     },
@@ -80,7 +82,7 @@ const CONFIG_V2 = {
       video: "videos_webm/main_idle.webm",
       loop: true,
       videoId: "97757",
-      orbitVideo: "videos_webm/main_around.webm",
+      orbitVideo: "videos_webm/main_around_pingpong.webm",
       orbitId: "97756",
       orbitLabel: "Orbit the yacht"
     },
@@ -88,10 +90,10 @@ const CONFIG_V2 = {
     deck: {
       title: "Deck",
       subtitle: "Teak deck and lounge sofas",
-      video: "videos_webm/deck_around.webm",
+      video: "videos_webm/deck_around_pingpong.webm",
       loop: true,
       videoId: "97755",
-      orbitVideo: "videos_webm/deck_around.webm",
+      orbitVideo: "videos_webm/deck_around_pingpong.webm",
       orbitId: "97755",
       orbitLabel: "Orbit the deck"
     },
@@ -123,13 +125,19 @@ const CONFIG_V2 = {
        from/to  first and last frame number (inclusive); pad = digits in NN
        fps      desktop playback rate; phones load every other frame at half the
                 rate, so the duration is the same
+       mobileExt  file type of the phone frames when it differs (e.g. "webp", smaller)
        reverse  play the frames backwards (reuse one render for the way back)
+       fadeIn   cross-fade in over the source video first (for sources that move)
      Rule: the first frame must match what is on screen in the source view and
      the last frame must match frame 0 of the destination view's idle video.
      Example:
        "exterior-to-deck": { folder: "images/seq/", prefix: "exterior_to_deck_", from: 0, to: 72, pad: 2, ext: "jpg", fps: 60 },
        "deck-to-exterior": { folder: "images/seq/", prefix: "exterior_to_deck_", from: 0, to: 72, pad: 2, ext: "jpg", fps: 60, reverse: true } */
-  sequences: {},
+  sequences: {
+    "exterior-to-deck": { folder: "images/seq_arch/", prefix: "main_deck_", from: 0, to: 99, pad: 3, ext: "jpg", mobileExt: "webp", fps: 36 },
+    // Deck's idle keeps orbiting, so the way back cross-fades into the first frame
+    "deck-to-exterior": { folder: "images/seq_arch/", prefix: "main_deck_", from: 0, to: 99, pad: 3, ext: "jpg", mobileExt: "webp", fps: 36, reverse: true, fadeIn: true }
+  },
 
   /* ── 4. SCENE-TO-SCENE TRANSITION MATRIX ──
      transitions[from][to] is either
@@ -144,8 +152,9 @@ const CONFIG_V2 = {
         endBehavior: "startSceneLoop"
       },
       deck: {
+        sequence: "exterior-to-deck",
         clipId: "cam-exterior-to-deck",
-        src: "videos_webm/main_deck.webm",
+        src: "videos_webm/main_deck.webm", // fallback if the frames fail to load
         endBehavior: "holdEndFrame"
       },
       flybridge: {
@@ -198,8 +207,9 @@ const CONFIG_V2 = {
         endBehavior: "startSceneLoop"
       },
       exterior: {
+        sequence: "deck-to-exterior",
         clipId: "cam-exterior-static",
-        src: "videos_webm/main_idle.webm",
+        src: "videos_webm/main_idle.webm", // fallback if the frames fail to load
         endBehavior: "startSceneLoop"
       }
     },
@@ -314,98 +324,7 @@ const CONFIG_V2 = {
       }
     ],
 
-    /* B) MATERIALS & HULL FINISHES */
-    materials: {
-      hull: [
-        {
-          id: "mat-hull-default",
-          code: "97757",
-          name: "Titanium silver",
-          category: "Hull",
-          desc: "Standard satin-metallic finish",
-          scene: "exterior",
-          src: "videos_webm/main_idle.webm",
-          loop: true,
-          swatch: "linear-gradient(135deg, #94a3b8 0%, #475569 100%)"
-        },
-        {
-          id: "mat-hull-cobalt",
-          code: "97746",
-          name: "Cobalt blue",
-          category: "Hull",
-          desc: "Titanium to cobalt blue and back",
-          scene: "exterior",
-          src: "videos_webm/main_cor_blue.webm",
-          loop: true,
-          swatch: "linear-gradient(135deg, #64748b 0%, #1d4ed8 50%, #3b82f6 100%)"
-        }
-      ],
-      deck: [
-        {
-          id: "mat-deck-sofa",
-          code: "97751",
-          name: "Anthracite sofas",
-          category: "Deck sofas",
-          desc: "Cream bouclé to charcoal grey",
-          scene: "deck",
-          src: "videos_webm/deck_color_blue_sofa.webm",
-          loop: false,
-          holdLastFrame: true,
-          swatch: "linear-gradient(135deg, #f5f0e6 0%, #374151 60%, #1f2937 100%)"
-        },
-        {
-          id: "mat-deck-floor",
-          code: "97752",
-          name: "Dark slate deck",
-          category: "Deck flooring",
-          desc: "Natural teak to dark thermo-ash",
-          scene: "deck",
-          src: "videos_webm/deck_color_blue_floor.webm",
-          loop: false,
-          holdLastFrame: true,
-          swatch: "linear-gradient(135deg, #d6b88e 0%, #57534e 55%, #292524 100%)"
-        }
-      ],
-      salon: [
-        {
-          id: "mat-salon-harmony",
-          code: "97729",
-          name: "Navy velvet suite",
-          category: "Interior",
-          desc: "Sand linen to navy velvet with terracotta",
-          scene: "salon",
-          src: "videos_webm/interior_001.webm",
-          loop: false,
-          holdLastFrame: true,
-          swatch: "linear-gradient(135deg, #e7e0d6 0%, #1e3a5f 60%, #c26d3a 100%)"
-        },
-        {
-          id: "mat-salon-sofas",
-          code: "97730",
-          name: "Slate & navy sofas",
-          category: "Interior",
-          desc: "Ivory sofas to slate and navy",
-          scene: "salon",
-          src: "videos_webm/interior_002.webm",
-          loop: false,
-          holdLastFrame: true,
-          swatch: "linear-gradient(135deg, #f3ede2 0%, #4b5563 50%, #1e3a8a 100%)"
-        },
-        {
-          id: "mat-salon-table",
-          code: "97731",
-          name: "Marble coffee table",
-          category: "Interior",
-          desc: "Smoked oak and Carrara marble",
-          scene: "salon",
-          src: "videos_webm/interior_003.webm",
-          loop: true,
-          swatch: "linear-gradient(135deg, #44372d 0%, #f8fafc 50%, #cbd5e1 100%)"
-        }
-      ]
-    },
-
-    /* C) ORBITS & STATIC LOOPS */
+    /* B) ORBITS & STATIC LOOPS */
     orbits: [
       {
         id: "orbit-yacht-360",
@@ -413,7 +332,7 @@ const CONFIG_V2 = {
         name: "Around the yacht",
         sub: "Full 360° flight at deck height",
         scene: "exterior",
-        src: "videos_webm/main_around.webm",
+        src: "videos_webm/main_around_pingpong.webm",
         loop: true,
         badge: "360°"
       },
@@ -423,7 +342,7 @@ const CONFIG_V2 = {
         name: "Around the cove",
         sub: "High orbit with the coastline",
         scene: "horizon",
-        src: "videos_webm/horizon_360.webm",
+        src: "videos_webm/horizon_360_pingpong.webm",
         loop: true,
         badge: "Orbit"
       },
@@ -433,7 +352,7 @@ const CONFIG_V2 = {
         name: "Around the deck sofas",
         sub: "Arc around the aft lounge",
         scene: "deck",
-        src: "videos_webm/deck_around.webm",
+        src: "videos_webm/deck_around_pingpong.webm",
         loop: true,
         badge: "Orbit"
       },

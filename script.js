@@ -116,15 +116,8 @@ function preloadNeighborsAndScene(sceneId) {
     }
   });
   urls.add(sc.orbitVideo);
-  if (!MOBILE) {
-    if (sceneId === "exterior") {
-      CONFIG_V2.catalog.materials.hull.forEach(m => urls.add(m.src));
-      CONFIG_V2.catalog.moods.forEach(m => urls.add(m.src));
-    } else if (sceneId === "deck") {
-      CONFIG_V2.catalog.materials.deck.forEach(m => urls.add(m.src));
-    } else if (sceneId === "salon") {
-      CONFIG_V2.catalog.materials.salon.forEach(m => urls.add(m.src));
-    }
+  if (!MOBILE && sceneId === "exterior") {
+    CONFIG_V2.catalog.moods.forEach(m => urls.add(m.src));
   }
   queuePreload([...urls]);
 }
@@ -260,34 +253,42 @@ function waitFirstPaintedFrame(vid, timeoutMs = 4000) {
    at a fixed rate. Phones use the "_m" folder (half resolution) and every other
    frame at half the rate, so a transition lasts the same everywhere. */
 const SEQ_CACHE_MAX = MOBILE ? 3 : 5;
-const seqCache = new Map(); // id -> Promise<HTMLImageElement[]>, oldest first
+const seqCache = new Map(); // frame set -> Promise<HTMLImageElement[]>, oldest first
 let lastSeqFrame = null;
 
 function sequenceFrameUrls(def) {
   const folder = MOBILE ? def.folder.replace(/\/?$/, "_m/") : def.folder;
+  const ext = (MOBILE && def.mobileExt) || def.ext || "jpg";
   const step = MOBILE ? 2 : 1;
   const urls = [];
   for (let n = def.from; n <= def.to; n += step) {
-    urls.push(`${folder}${def.prefix}${String(n).padStart(def.pad || 2, "0")}.${def.ext || "jpg"}`);
+    urls.push(`${folder}${def.prefix}${String(n).padStart(def.pad || 2, "0")}.${ext}`);
   }
   return urls;
 }
 
-function rememberSequence(id, promise) {
-  seqCache.delete(id);
-  seqCache.set(id, promise);
+// Sequences that read the same frames (e.g. one played in reverse) share one
+// download and one set of decoded images.
+function sequenceKey(def) {
+  return `${def.folder}${def.prefix}${def.from}-${def.to}`;
+}
+
+function rememberSequence(key, promise) {
+  seqCache.delete(key);
+  seqCache.set(key, promise);
   while (seqCache.size > SEQ_CACHE_MAX) seqCache.delete(seqCache.keys().next().value);
 }
 
 function preloadSequence(id, onProgress) {
-  if (seqCache.has(id)) {
-    const cached = seqCache.get(id);
-    rememberSequence(id, cached); // refresh its place in the cache
+  const def = CONFIG_V2.sequences?.[id];
+  if (!def) return Promise.reject(new Error(`Unknown sequence: ${id}`));
+  const key = sequenceKey(def);
+  if (seqCache.has(key)) {
+    const cached = seqCache.get(key);
+    rememberSequence(key, cached); // refresh its place in the cache
     if (onProgress) cached.then(() => onProgress(1), () => onProgress(1));
     return cached;
   }
-  const def = CONFIG_V2.sequences?.[id];
-  if (!def) return Promise.reject(new Error(`Unknown sequence: ${id}`));
   const urls = sequenceFrameUrls(def);
   const frames = new Array(urls.length);
   const parallel = MOBILE ? 4 : urls.length;
@@ -313,14 +314,14 @@ function preloadSequence(id, onProgress) {
       img.onerror = () => {
         if (failed) return;
         failed = true;
-        seqCache.delete(id);
+        seqCache.delete(key);
         reject(new Error(`Failed to load ${img.src}`));
       };
       img.src = urls[i];
     };
     for (let k = 0; k < Math.min(parallel, urls.length); k++) loadNext();
   });
-  rememberSequence(id, promise);
+  rememberSequence(key, promise);
   return promise;
 }
 
@@ -333,13 +334,24 @@ function drawCover(img) {
   lastSeqFrame = img;
 }
 
-function playSequence(frames, reverse, gen, fps) {
+// fadeIn: cross-fade from the moving source video to the first frame (300 ms)
+// before playing, for sources whose camera is not static.
+function playSequence(frames, reverse, gen, fps, fadeIn = false) {
   return new Promise(resolve => {
-    seqCanvas.classList.remove("fading");
-    seqCanvas.classList.add("active");
+    seqCanvas.classList.remove("fading", "entering", "in");
     const frameMs = 1000 / fps;
     let i = reverse ? frames.length - 1 : 0;
     let last = 0;
+    if (fadeIn) {
+      seqCanvas.classList.add("entering", "active");
+      if (frames[i]) drawCover(frames[i]);
+      void seqCanvas.offsetWidth; // commit opacity 0 before the transition
+      seqCanvas.classList.add("in");
+      last = performance.now() + 300 - frameMs; // hold the first frame while it fades in
+      setTimeout(() => seqCanvas.classList.remove("entering", "in"), 300);
+    } else {
+      seqCanvas.classList.add("active");
+    }
     const step = now => {
       if (gen !== navGen) return resolve(false);
       if (now - last >= frameMs) {
@@ -510,7 +522,7 @@ function extractCodeFromSrc(src) {
   if (m) return m[1];
   // Renamed clips (e.g. main_idle.mp4) carry no code in the filename: look it up in the catalog
   const cat = CONFIG_V2.catalog;
-  const all = [...cat.moods, ...cat.materials.hull, ...cat.materials.deck, ...cat.materials.salon, ...cat.orbits, ...cat.cameraTransitions];
+  const all = [...cat.moods, ...cat.orbits, ...cat.cameraTransitions];
   return all.find(item => item.src === src)?.code || "";
 }
 
@@ -585,7 +597,7 @@ async function playSequenceTransition(trans, destSceneId) {
   // Warm the destination video while the frames play
   preloadMp4Blob(destScene.video);
   const fps = (def.fps || 30) / (MOBILE ? 2 : 1);
-  const finished = await playSequence(frames, !!def.reverse, gen, fps);
+  const finished = await playSequence(frames, !!def.reverse, gen, fps, !!def.fadeIn);
   if (!finished || gen !== navGen) return null;
   getActiveVideo().pause();
 
@@ -607,9 +619,6 @@ function findCatalogItem(idOrCode) {
   const cat = CONFIG_V2.catalog;
   const all = [
     ...cat.moods,
-    ...cat.materials.hull,
-    ...cat.materials.deck,
-    ...cat.materials.salon,
     ...cat.orbits,
     ...cat.cameraTransitions
   ];
@@ -621,11 +630,7 @@ window.triggerCatalogClip = function triggerCatalogClip(idOrCode) {
   if (!item) return;
 
   // Record bespoke selection for the Shipyard Dossier
-  if (item.id.startsWith("mat-hull-")) yachtConfigState.hull = item.name;
-  else if (item.id === "mat-deck-sofa") yachtConfigState.deckSofa = "Anthracite bouclé";
-  else if (item.id === "mat-deck-floor") yachtConfigState.deckFloor = "Dark thermo-ash";
-  else if (item.id.startsWith("mat-salon-")) yachtConfigState.salonSuite = item.name;
-  else if (item.id.startsWith("mood-")) yachtConfigState.atmosphere = item.name;
+  if (item.id.startsWith("mood-")) yachtConfigState.atmosphere = item.name;
 
   const targetScene = item.to || item.scene || currentScene;
   playMp4Clip({
@@ -641,21 +646,6 @@ window.triggerCatalogClip = function triggerCatalogClip(idOrCode) {
   });
 
   track("clip_trigger_v2", { id: item.id, code: item.code, name: item.name });
-};
-
-window.triggerCurrentOrbit = function triggerCurrentOrbit() {
-  const sc = CONFIG_V2.scenes[currentScene];
-  if (sc && sc.orbitVideo) {
-    playMp4Clip({
-      src: sc.orbitVideo,
-      code: sc.orbitId || extractCodeFromSrc(sc.orbitVideo),
-      name: sc.orbitLabel || `${sc.title} Orbit`,
-      loop: true,
-      targetScene: currentScene
-    });
-  } else {
-    window.triggerCatalogClip("orbit-yacht-360");
-  }
 };
 
 window.replayCurrentClip = function replayCurrentClip() {
@@ -677,37 +667,20 @@ window.toggleForceLoop = function toggleForceLoop() {
 };
 
 /* ── CONTEXT-AWARE ON-STAGE QUICK CONFIGURATOR BAR (#context-config-bar) ──
-   Gives Yacht Builders & buyers 1-click access to Hull Colors, Deck Materials,
-   Salon Finishes, and Camera Flights relevant to the current camera angle! */
+   Gives 1-click access to the Camera Flights relevant to the current camera angle! */
 function renderContextConfigBar(sceneId) {
   const bar = document.getElementById("context-config-bar");
   if (!bar) return;
-  const cat = CONFIG_V2.catalog;
 
   let label = "";
   let pillsHtml = "";
 
-  const swatch = item => `
-      <button class="ctx-swatch-btn" data-clip-code="${item.code}" onclick="triggerCatalogClip('${item.id}')" title="${item.desc}">
-        <span class="ctx-swatch-dot" style="background:${item.swatch}"></span>
-        <span class="ctx-swatch-lbl">${item.name}</span>
-      </button>`;
   const action = (code, id, text) => `
       <button class="ctx-action-btn" data-clip-code="${code}" onclick="triggerCatalogClip('${id}')">
         <span>${text}</span>
       </button>`;
 
-  if (sceneId === "exterior") {
-    label = "Hull color";
-    pillsHtml = cat.materials.hull.map(swatch).join("");
-  } else if (sceneId === "deck") {
-    label = "Deck";
-    pillsHtml = cat.materials.deck.map(swatch).join("") +
-      action("97732", "cam-deck-to-salon-a", "Go to interior");
-  } else if (sceneId === "salon") {
-    label = "Interior finishes";
-    pillsHtml = cat.materials.salon.map(swatch).join("");
-  } else if (sceneId === "flybridge") {
+  if (sceneId === "flybridge") {
     label = "Go to interior";
     pillsHtml =
       action("97733", "cam-flybridge-to-salon-a", "Via side glass") +
@@ -719,6 +692,7 @@ function renderContextConfigBar(sceneId) {
       action("97734", "cam-horizon-to-salon", "Fly into interior");
   }
 
+  bar.classList.toggle("is-empty", !pillsHtml); // e.g. Exterior has no options
   bar.innerHTML = `
     <span class="ctx-bar-eyebrow">${label}</span>
     <div class="ctx-bar-items">${pillsHtml}</div>
@@ -736,24 +710,12 @@ function buildTrack() {
     const btn = document.createElement("button");
     btn.className = "t-pt";
     btn.dataset.id = item.id;
-    btn.innerHTML = `<span class="t-label">${item.shortLabel || item.label}</span>`;
+    btn.setAttribute("aria-label", item.label);
+    // The icon only shows on phones, where inactive views collapse to it
+    btn.innerHTML = `<span class="t-ic" aria-hidden="true">${item.icon || ""}</span><span class="t-label">${item.shortLabel || item.label}</span>`;
     btn.addEventListener("click", () => navigateTo(item.id));
     wrap.appendChild(btn);
   });
-
-  const orbitBtn = document.createElement("button");
-  orbitBtn.id = "dock-orbit-btn";
-  orbitBtn.className = "t-pt t-pt--orbit";
-  orbitBtn.setAttribute("aria-label", "Orbit around this view");
-  orbitBtn.innerHTML = `
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/>
-      <path d="M21 3v5h-5"/>
-    </svg>
-    <span class="t-label">Orbit</span>
-  `;
-  orbitBtn.addEventListener("click", () => window.triggerCurrentOrbit());
-  wrap.appendChild(orbitBtn);
 
   trackEl.appendChild(wrap);
   trackEl.classList.add("show");
@@ -830,28 +792,19 @@ function buildExplorerMenus() {
     </div>
   `;
 
-  // 2. Drawer — Finishes
-  const matContainer = document.getElementById("exp-tab-materials");
-  if (matContainer) {
-    matContainer.innerHTML =
-      section("Hull color", `${cat.materials.hull.length} finishes`, swatchGrid(cat.materials.hull)) +
-      section("Deck", "Sofas and flooring", swatchGrid(cat.materials.deck)) +
-      section("Interior", "Sofas, fabrics and stone", swatchGrid(cat.materials.salon));
-  }
-
-  // 3. Drawer — Camera moves
+  // 2. Drawer — Camera moves
   const camContainer = document.getElementById("exp-tab-cameras");
   if (camContainer) {
     camContainer.innerHTML = section("Camera moves", "Fly from one area of the yacht to another", rowList(cat.cameraTransitions));
   }
 
-  // 4. Drawer — Orbits & still views
+  // 3. Drawer — Orbits & still views
   const orbitContainer = document.getElementById("exp-tab-orbits");
   if (orbitContainer) {
     orbitContainer.innerHTML = section("Orbits", "Circle around the yacht or hold a still view", rowList(cat.orbits));
   }
 
-  // 5. Drawer — Lighting & weather
+  // 4. Drawer — Lighting & weather
   const moodContainer = document.getElementById("exp-tab-moods");
   if (moodContainer) {
     moodContainer.innerHTML = section("Lighting", "Time of day and weather", swatchGrid(cat.moods));

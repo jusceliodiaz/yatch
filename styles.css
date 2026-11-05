@@ -5100,11 +5100,88 @@ body {
   opacity: 0 !important;
   transition: opacity 300ms ease !important;
 }
+/* Sequences that leave a moving video cross-fade in over it */
+#seq-canvas.entering { opacity: 0 !important; }
+#seq-canvas.entering.in {
+  opacity: 1 !important;
+  transition: opacity 300ms ease !important;
+}
 
 @media (prefers-reduced-motion: reduce) {
   #preloader,
   #preloader-bar,
-  #seq-canvas.fading {
+  #seq-canvas.fading,
+  #seq-canvas.entering.in {
     transition: none !important;
+  }
+}
+
+/* Views without options (e.g. Exterior) hide the options bar */
+#context-config-bar.is-empty { display: none !important; }
+
+/* ── Phones: views collapse to icons; only the current view shows its name ── */
+#bottom-console .t-pt .t-ic {
+  display: none;
+}
+@media (max-width: 768px), (orientation: landscape) and (max-height: 520px) {
+  #bottom-console .t-pt .t-ic {
+    display: grid;
+    place-items: center;
+  }
+  #bottom-console .t-pt .t-ic svg {
+    width: 20px;
+    height: 20px;
+  }
+  #bottom-console .t-pt:not(.active) .t-label {
+    display: none;
+  }
+  #bottom-console .t-pt:not(.active) {
+    width: 40px;
+    padding: 0;
+    justify-content: center;
+  }
+  #bottom-console .t-pt.active {
+    padding: 0 14px 0 12px;
+  }
+  #bottom-console #track-pts {
+    justify-content: center;
+  }
+}
+@media (orientation: landscape) and (max-height: 520px) {
+  #bottom-console .t-pt:not(.active) {
+    width: 34px;
+  }
+  #bottom-console .t-pt .t-ic svg {
+    width: 17px;
+    height: 17px;
+  }
+}
+
+/* ── Top left: the Lighting dropdown takes the place of the old brand pill ── */
+body #scene-controls {
+  top: max(18px, env(safe-area-inset-top, 18px));
+  left: 22px;
+  right: auto;
+  width: auto;
+  transform: none;
+  justify-content: flex-start;
+}
+.pop-menu--left {
+  left: 0;
+  transform: translateY(-4px);
+}
+.pop-wrap.open > .pop-menu--left {
+  transform: translateY(0);
+}
+@media (max-width: 768px) {
+  body #scene-controls {
+    top: max(10px, env(safe-area-inset-top, 10px));
+    left: max(10px, env(safe-area-inset-left, 10px));
+  }
+}
+@media (orientation: landscape) and (max-height: 520px) {
+  body #scene-controls {
+    top: max(8px, env(safe-area-inset-top, 8px));
+    left: max(10px, env(safe-area-inset-left, 10px));
   }
 }

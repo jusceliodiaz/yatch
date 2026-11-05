@@ -9,7 +9,7 @@
     <title>MAGNIFIC 68' — Yacht configurator</title>
     <meta
       name="description"
-      content="Interactive Superyacht Digital Showroom & Bespoke Configurator V2 — explore 5 camera viewpoints, 11 cinematic flights, hull paint finishes, marine teak decking, Italian salon interiors, and real-time weather/lighting moods."
+      content="Interactive Superyacht Digital Showroom & Bespoke Configurator V2 — explore 5 camera viewpoints, 11 cinematic flights, marine teak decking, Italian salon interiors, and real-time weather/lighting moods."
     />
     <link rel="icon" type="image/png" href="images/fav-icon.png" />
     <link rel="preload" href="images/poster_main_idle.jpg?v=1" as="image" media="(hover: hover) and (min-width: 768px)" />
@@ -20,7 +20,7 @@
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400..700&display=swap"
     />
-    <link rel="stylesheet" href="styles.css?v=3" />
+    <link rel="stylesheet" href="styles.css?v=8" />
   </head>
   <body>
     <!-- ══ PRELOADER: holds until the opening view can play without stalling ══ -->
@@ -41,23 +41,7 @@
 
     <div id="loader"><span></span><span></span><span></span></div>
 
-    <!-- ══ TOP LEFT: SUPERYACHT BRAND & VIEWPOINT TELEMETRY ══ -->
-    <header id="brand-header">
-      <div class="brand-crest">
-        <span class="brand-eyebrow">Digital showroom</span>
-        <h1 class="brand-title">MAGNIFIC <span>68'</span></h1>
-      </div>
-      <div class="brand-divider"></div>
-      <div class="brand-telemetry">
-        <div class="brand-scene-row">
-          <span id="brand-scene-badge" class="brand-badge">EXTERIOR 02</span>
-          <span id="brand-scene-coords" class="brand-coords">41°08'N · 09°32'E</span>
-        </div>
-        <div id="brand-scene-title" class="brand-scene-name">Exterior</div>
-      </div>
-    </header>
-
-    <!-- ══ TOP CENTER: ATMOSPHERE, WEATHER & LIGHTING DROPDOWN ══ -->
+    <!-- ══ TOP LEFT: ATMOSPHERE, WEATHER & LIGHTING DROPDOWN ══ -->
     <div id="scene-controls">
       <div class="pop-wrap" id="mood-wrap">
         <button id="mood-toggle" class="pop-toggle" type="button" data-pop="mood-wrap" aria-expanded="false" aria-controls="mood-quick-bar" title="Lighting and weather">
@@ -68,13 +52,13 @@
           </span>
           <svg class="pop-chevron" viewBox="0 0 12 12" width="10" height="10" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2.5 4.5L6 8l3.5-3.5" /></svg>
         </button>
-        <div id="mood-quick-bar" class="pop-menu" role="group" aria-label="Lighting and weather"></div>
+        <div id="mood-quick-bar" class="pop-menu pop-menu--left" role="group" aria-label="Lighting and weather"></div>
       </div>
     </div>
 
     <!-- ══ TOP RIGHT: BESPOKE STUDIO, FF&E SHOP, AI STUDIO & DOSSIER CTA ══ -->
     <div id="top-right-dock">
-      <button id="explorer-toggle-btn" class="top-action-btn top-action-btn--primary" type="button" onclick="toggleExplorerDrawer()" title="Finishes, lighting and camera moves">
+      <button id="explorer-toggle-btn" class="top-action-btn top-action-btn--primary" type="button" onclick="toggleExplorerDrawer()" title="Lighting and camera moves">
         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="3" />
           <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
@@ -154,10 +138,7 @@
       </div>
 
       <div class="exp-tabs" role="tablist">
-        <button class="exp-tab-btn active" data-tab="materials" onclick="switchExplorerTab('materials')">
-          Finishes
-        </button>
-        <button class="exp-tab-btn" data-tab="cameras" onclick="switchExplorerTab('cameras')">
+        <button class="exp-tab-btn active" data-tab="cameras" onclick="switchExplorerTab('cameras')">
           Camera moves
         </button>
         <button class="exp-tab-btn" data-tab="moods" onclick="switchExplorerTab('moods')">
@@ -169,8 +150,7 @@
       </div>
 
       <div class="exp-drawer-body">
-        <div id="exp-tab-materials" class="exp-tab-panel active"></div>
-        <div id="exp-tab-cameras" class="exp-tab-panel"></div>
+        <div id="exp-tab-cameras" class="exp-tab-panel active"></div>
         <div id="exp-tab-moods" class="exp-tab-panel"></div>
         <div id="exp-tab-orbits" class="exp-tab-panel"></div>
       </div>
@@ -597,8 +577,8 @@
       }
     </script>
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
-    <script src="scenes.js?v=3"></script>
-    <script src="script.js?v=2"></script>
+    <script src="scenes.js?v=11"></script>
+    <script src="script.js?v=9"></script>
     <script src="shop.js?v=1"></script>
     <script type="module" src="shop3d.js?v=1"></script>
   </body>
